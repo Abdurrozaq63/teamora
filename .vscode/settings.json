@@ -1,18 +1,24 @@
 {
-    "workbench.colorTheme": "Tinacious Design",
-    "workbench.iconTheme": "vscode-icons",
-    "workbench.preferredLightColorTheme": "Galactic Night",
-    "quokka.darkTheme.log.decorationAttachmentRenderOptions": {
-        
-        "border": null,
-        "borderColor": null,
-        "fontStyle": null,
-        "fontWeight": null,
-        "textDecoration": null,
-        "color": "rgba(86, 156, 214, 1)",
-        "backgroundColor": null,
-        "margin": "1.2em",
-        "width": null,
-        "height": null
-    }
+  "prettier.requireConfig": false,
+  "prettier.useEditorConfig": false,
+  "workbench.colorTheme": "Tinacious Design",
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.preferredDarkColorTheme": "Galactic Night",
+  "jupyter.themeMatplotlibPlots": false,
+  "editor.semanticHighlighting.enabled": "configuredByTheme",
+  "workbench.activityBar.iconClickBehavior": "toggle",
+  "editor.cursorStyle": "line",
+  "editor.hideCursorInOverviewRuler": false,
+  "editor.multiCursorMergeOverlapping": false,
+  "editor.overtypeCursorStyle": "line",
+  "scss.hover.references": false,
+  "editor.hover.above": false,
+  "editor.hover.enabled": "off",
+  "editor.hover.sticky": false,
+  "C_Cpp.markdownInComments": "disabled",
+  "accessibility.verbosity.hover": false,
+  "typescript.tsserver.web.projectWideIntellisense.enabled": false,
+  "editor.parameterHints.enabled": false,
+  "prettier.requirePragma": false,
+  "editor.defaultFormatter": "Prisma.prisma"
 }

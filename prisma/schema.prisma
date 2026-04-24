@@ -8,6 +8,189 @@ generator client {
   output   = "../app/generated/prisma"
 }
 
+// prisma/schema.prisma
 datasource db {
   provider = "postgresql"
+}
+
+enum RoleName {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum ProjectStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum MembershipStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+}
+
+enum ProjectRole {
+  ADMIN
+  MEMBER
+}
+
+model Tenant {
+  id          String       @id @default(uuid())
+  name        String
+  inviteCode  String       @unique @default(uuid())
+  memberships Membership[]
+  projects    Project[]
+  tasks       Task[]
+  auditLogs   AuditLog[]
+  createdAt   DateTime     @default(now())
+  deletedAt   DateTime?
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String?
+  name          String
+  image         String?
+  emailVerified DateTime?
+  isActive      Boolean   @default(true)
+
+  memberships Membership[]
+  auditLogs   AuditLog[]
+
+  accounts Account[]
+  sessions Session[]
+
+  createdAt      DateTime        @default(now())
+  projectMembers ProjectMember[]
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        RoleName     @unique
+  memberships Membership[]
+}
+
+model ProjectMember {
+  id        String @id @default(uuid())
+  userId    String
+  projectId String
+
+  role     ProjectRole @default(MEMBER)
+  joinedAt DateTime    @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
+}
+
+model Membership {
+  id       String           @id @default(uuid())
+  userId   String
+  tenantId String
+  roleId   String
+  status   MembershipStatus @default(ACTIVE)
+  joinedAt DateTime         @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, tenantId])
+  @@index([tenantId])
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  tenantId    String
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+  createdBy   String
+  createdAt   DateTime      @default(now())
+  deletedAt   DateTime?
+
+  tenant  Tenant          @relation(fields: [tenantId], references: [id])
+  tasks   Task[]
+  members ProjectMember[]
+
+  @@index([tenantId])
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  tenantId    String
+  projectId   String
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  assignedTo  String?
+  dueDate     DateTime?
+  createdAt   DateTime   @default(now())
+  deletedAt   DateTime?
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@index([tenantId])
+  @@index([projectId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  tenantId  String
+  userId    String
+  action    String
+  entity    String
+  entityId  String
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([tenantId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
