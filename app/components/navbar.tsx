@@ -1,11 +1,11 @@
 'use client';
-
+import { useLogout } from '@/features/auth/hooks/useLogout';
 import Link from 'next/link';
 
 type MenuItem = {
   name: string;
   href?: string;
-  onClick?: () => void;
+  action?: 'logout';
 };
 
 type NavbarProps = {
@@ -13,6 +13,7 @@ type NavbarProps = {
 };
 
 export default function Navbar({ menus = [] }: NavbarProps) {
+  const { logout } = useLogout();
   return (
     <header className=" border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-8 px-4 sm:px-6 lg:px-8">
@@ -39,7 +40,11 @@ export default function Navbar({ menus = [] }: NavbarProps) {
                     </Link>
                   ) : (
                     <button
-                      onClick={menu.onClick}
+                      onClick={() => {
+                        if (menu.action === 'logout') {
+                          logout();
+                        }
+                      }}
                       className="text-gray-500 transition hover:text-gray-700 dark:text-white dark:hover:text-white/75">
                       {menu.name}
                     </button>

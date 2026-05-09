@@ -1,5 +1,4 @@
 import Navbar from '@/app/components/navbar';
-
 export default function DashboardLayout({
   children,
 }: {
@@ -8,7 +7,7 @@ export default function DashboardLayout({
   const menus = [
     { name: 'Profile', href: '/profile' },
     { name: 'Settings', href: '/settings' },
-    { name: 'Logout' },
+    { name: 'Logout', action: 'logout' },
   ];
 
   return (

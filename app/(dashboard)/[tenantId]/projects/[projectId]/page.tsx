@@ -1,57 +1,50 @@
-'use client';
-import { useParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
-type Projects = {
-  id: string;
-  userId: string;
-  projectId: string;
-  role: string;
-  joinedAt: string;
-  project: {
-    id: string;
+import { auth } from '@/lib/auth';
+
+import { redirect } from 'next/navigation';
+
+import { getProjectDetail } from '@/features/project/services/detail-project.service';
+
+import ProjectHeader from '@/features/project/components/DetailHeaderProject';
+
+import ProjectTabs from '@/features/project/components/DetailProjectTabs';
+import { getTaskList } from '@/features/task/services/task-list';
+
+interface Props {
+  params: Promise<{
     tenantId: string;
-    name: string;
-    description: string;
-    status: string;
-    createdBy: string;
-    createdAt: string;
-    deletedAt: string | null;
-  };
-};
-export default function detailProject() {
-  const params = useParams();
-  const [detProject, setProject] = useState<Projects | null>(null);
-  const tenantId = params.tenantId as string;
-  const projectId = params.projectId as string;
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    getProject();
-  }, []);
-  async function getProject() {
-    setLoading(true);
-    const res = await fetch(`/api/project/${tenantId}/${projectId}`);
-    console.log('tenantId', tenantId);
-    console.log('projectId', projectId);
-    if (!res.ok) {
-      alert('Something Problems');
-      //router.push()
-      return;
-    }
-    const data = await res.json();
-    setProject(data);
-    setLoading(false);
+    projectId: string;
+  }>;
+}
+
+export default async function ProjectDetailPage({ params }: Props) {
+  const session = await auth();
+
+  if (!session) {
+    redirect('/login');
   }
 
-  if (!detProject || detProject == null) return <div>Loading...</div>;
+  const { tenantId, projectId } = await params;
+
+  const project = await getProjectDetail({
+    tenantId,
+    projectId,
+    userId: session.user.id,
+  });
+  const task = await getTaskList({
+    tenantId,
+    projectId,
+    userId: session.user.id,
+  });
+
+  if (!project || !task) {
+    redirect(`/${tenantId}/projects`);
+  }
 
   return (
-    <div>
-      <h1>Detail project</h1>
-      <div>
-        <h2>Name Project: {detProject.project.name}</h2>
-        <h2>Description</h2>
-        <p>{detProject.project.description}</p>
-      </div>
+    <div className="space-y-6">
+      <ProjectHeader project={project} />
+
+      <ProjectTabs tenantId={tenantId} projectId={projectId} task={task} />
     </div>
   );
 }

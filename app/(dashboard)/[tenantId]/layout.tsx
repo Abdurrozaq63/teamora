@@ -9,26 +9,29 @@ export type MenuItem = {
   roles?: Role[];
 };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: { tenantId: string };
 }) {
+  const { tenantId } = await params;
   const role: 'OWNER' | 'ADMIN' | 'MEMBER' = 'OWNER'; // ambil dari session / DB
 
   const menus: MenuItem[] = [
-    { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Projects', href: '/projects' },
-    { name: 'Tasks', href: '/tasks' },
-    { name: 'Members', href: '/members' },
+    { name: 'Dashboard', href: `/${tenantId}` },
+    { name: 'Projects', href: `/${tenantId}/projects` },
+    { name: 'Tasks', href: `/${tenantId}/tasks` },
+    { name: 'Members', href: `/${tenantId}/members` },
     {
       name: 'Audit Logs',
-      href: '/audit-logs',
+      href: `/${tenantId}/auditlogs`,
       roles: ['OWNER', 'ADMIN'],
     },
     {
       name: 'Settings',
-      href: '/settings',
+      href: `/${tenantId}/settings`,
       roles: ['OWNER', 'ADMIN'],
     },
   ];

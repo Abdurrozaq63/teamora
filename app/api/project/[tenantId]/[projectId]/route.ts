@@ -8,10 +8,12 @@ export async function GET(
 ) {
   try {
     const session = await auth();
-    const { tenantId, projectId } = await context.params;
+
     if (!session) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
+    const { tenantId, projectId } = await context.params;
+    //validasi params belum dibuat
     //Member Of Tenant
     const membership = await prisma.membership.findFirst({
       where: {
@@ -22,20 +24,23 @@ export async function GET(
     });
 
     if (!membership) {
-      return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ message: 'Forbidden' }, { status: 401 });
     }
 
     const getProject = await prisma.projectMember.findFirst({
       where: {
         userId: session.user.id,
         projectId,
+        project: {
+          tenantId,
+        },
       },
       include: {
         project: true,
       },
     });
     if (!getProject) {
-      return NextResponse.json({ message: 'Undefined' }, { status: 402 });
+      return NextResponse.json({ message: 'Undefined' }, { status: 404 });
     }
     return NextResponse.json(getProject);
   } catch (error) {

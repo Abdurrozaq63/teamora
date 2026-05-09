@@ -1,62 +1,100 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { auth } from '@/lib/auth';
-import { z } from 'zod';
 
-const schema = z.object({
-  name: z.string().min(3, 'Nama workspace minima 3 karakter'),
-  description: z.string().min(3, 'description minimal 3 karakter'),
-  //tenantId: z.string().uuid('Tenant tidak valid'),
-});
+import { auth } from '@/lib/auth';
+
+import { createProjectSchema } from '@/features/project/validations/create-project.schema';
+
+import { canCreateProject } from '@/features/project/permissions/create-project.permission';
+
+import { createProject } from '@/features/project/services/create-project.service';
 
 export async function POST(
   req: NextRequest,
-  context: { params: Promise<{ tenantId: string }> },
+
+  context: {
+    params: Promise<{
+      tenantId: string;
+    }>;
+  },
 ) {
   try {
     const session = await auth();
-    //const tenantId = params.tenantId;
-    //perlu diingat
-    //validasi tenantId
-    //validasi role dan membership
-    const { tenantId } = await context.params;
+
     if (!session) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        {
+          message: 'Unauthorized',
+        },
+        {
+          status: 401,
+        },
+      );
     }
+
+    const { tenantId } = await context.params;
+
     const body = await req.json();
-    const parsed = schema.safeParse(body);
+
+    const parsed = createProjectSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
-        { message: 'data tidak valid' },
-        { status: 400 },
+        {
+          message: 'Data tidak valid',
+          errors: parsed.error.flatten(),
+        },
+        {
+          status: 400,
+        },
       );
     }
-    const { name, description } = parsed.data;
 
-    const projectAdd = await prisma.project.create({
-      data: {
-        tenantId,
-        name: name,
-        description: description,
-        createdBy: session.user.id,
-      },
+    const allowed = await canCreateProject({
+      tenantId,
+      userId: session.user.id,
     });
-    if (!projectAdd) {
+
+    if (!allowed) {
       return NextResponse.json(
-        { messagge: 'gagal menambhakan Project' },
-        { status: 403 },
+        {
+          message: 'Forbidden',
+        },
+        {
+          status: 403,
+        },
       );
     }
-    return NextResponse.json({
-      message: 'Project berhasil ditambahkan',
-      projectId: projectAdd.id,
+
+    const project = await createProject({
+      tenantId,
+
+      name: parsed.data.name,
+
+      description: parsed.data.description,
+
+      userId: session.user.id,
     });
+
+    return NextResponse.json(
+      {
+        message: 'Project berhasil dibuat',
+
+        project,
+      },
+      {
+        status: 201,
+      },
+    );
   } catch (error) {
     console.error(error);
+
     return NextResponse.json(
-      { message: 'terjadi kesalahan server' },
-      { status: 500 },
+      {
+        message: 'Terjadi kesalahan server',
+      },
+      {
+        status: 500,
+      },
     );
   }
 }
