@@ -34,61 +34,186 @@ export default function LoginForm() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate-100 p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl border shadow-lg p-8">
-        <h1 className="text-3xl font-extrabold text-center text-slate-800 mb-6">
-          Masuk ke <span className="text-blue-600">KOSIN</span>
-        </h1>
+    <main className="min-h-screen bg-linear-to-br from-slate-100 via-white to-blue-50 dark:from-black dark:via-gray-950 dark:to-slate-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Card */}
+        <div
+          className="
+        rounded-3xl
+        border border-white/40 dark:border-gray-800
+        bg-white/80 dark:bg-gray-900/80
+        backdrop-blur-xl
+        shadow-xl shadow-slate-200/50 dark:shadow-black/30
+        overflow-hidden
+      ">
+          {/* Header */}
+          <div className="px-6 pt-8 pb-6 border-b border-gray-200/70 dark:border-gray-800">
+            <div className="space-y-3 text-center">
+              {/* Logo */}
+              <div
+                className="
+              mx-auto
+              flex items-center justify-center
+              w-14 h-14
+              rounded-2xl
+              bg-linear-to-br from-blue-500 to-indigo-600
+              text-white
+              text-xl font-bold
+              shadow-lg shadow-blue-500/20
+            ">
+                T
+              </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-900"
-          />
+              {/* Title */}
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Welcome Back
+                </h1>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-900"
-          />
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Sign in to continue to{' '}
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">
+                    TeamOra
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
 
-          {validationError && (
-            <p className="text-sm text-red-500">{validationError}</p>
-          )}
+          {/* Form */}
+          <div className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Email */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Email
+                </label>
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="
+                w-full rounded-xl
+                border border-gray-200 dark:border-gray-700
+                bg-white/70 dark:bg-gray-900
+                px-4 py-3
+                text-sm text-gray-900 dark:text-white
+                placeholder:text-gray-400
+                focus:outline-none
+                focus:ring-2 focus:ring-blue-500/40
+                focus:border-blue-500
+                transition
+              "
+                />
+              </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50">
-            {loading ? 'Loading...' : 'Masuk'}
-          </button>
-        </form>
+              {/* Password */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Password
+                </label>
 
-        <button
-          onClick={() =>
-            signIn('google', {
-              callbackUrl: '/dashboard',
-            })
-          }
-          className="w-full mt-4 border rounded-lg py-2 hover:bg-gray-100">
-          Login dengan Google
-        </button>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="
+                w-full rounded-xl
+                border border-gray-200 dark:border-gray-700
+                bg-white/70 dark:bg-gray-900
+                px-4 py-3
+                text-sm text-gray-900 dark:text-white
+                placeholder:text-gray-400
+                focus:outline-none
+                focus:ring-2 focus:ring-blue-500/40
+                focus:border-blue-500
+                transition
+              "
+                />
+              </div>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Belum punya akun?{' '}
-          <a
-            href="/register"
-            className="text-blue-600 hover:underline font-medium">
-            Daftar
-          </a>
-        </p>
+              {/* Error */}
+              {(validationError || error) && (
+                <div
+                  className="
+                rounded-xl
+                border border-red-200 dark:border-red-900/50
+                bg-red-50 dark:bg-red-900/10
+                px-4 py-3
+                text-sm text-red-600 dark:text-red-400
+              ">
+                  {validationError || error}
+                </div>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="
+              w-full rounded-xl
+              bg-linear-to-r from-blue-600 to-indigo-600
+              text-white
+              py-3
+              text-sm font-semibold
+              hover:opacity-90
+              disabled:opacity-50
+              transition-opacity
+              shadow-lg shadow-blue-500/20
+              cursor-pointer
+            ">
+                {loading ? 'Loading...' : 'Masuk'}
+              </button>
+            </form>
+
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200 dark:border-gray-800" />
+              </div>
+
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white dark:bg-gray-900 px-3 text-gray-400">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            {/* Google Button */}
+            <button
+              onClick={() =>
+                signIn('google', {
+                  callbackUrl: '/dashboard',
+                })
+              }
+              className="
+            w-full rounded-xl
+            border border-gray-200 dark:border-gray-700
+            bg-white/70 dark:bg-gray-900
+            py-3 px-4
+            text-sm font-medium
+            text-gray-700 dark:text-gray-300
+            hover:bg-gray-50 dark:hover:bg-gray-800
+            transition-colors
+            cursor-pointer
+          ">
+              Login dengan Google
+            </button>
+
+            {/* Footer */}
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+              Belum punya akun?{' '}
+              <a
+                href="/register"
+                className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+                Daftar
+              </a>
+            </p>
+          </div>
+        </div>
       </div>
     </main>
   );

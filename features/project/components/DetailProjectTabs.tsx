@@ -4,48 +4,113 @@ import { useState, useEffect } from 'react';
 
 import TaskSection from './TaskSection';
 
-import MemberSection from './MemberSection';
-import { Task } from '@/features/task/types/create-task.type';
+import { Task } from '@/features/task/types/task.type';
 import { useTaskStore } from '@/features/task/store/useTaskStore';
+import { useProjectStore } from '../store/useProjectStore';
+import { MemberProject } from '../types/member-project.type';
+import MemberView from './MemberView';
+import { UnmemberProject } from '../types/unmember-project.type';
 
 interface Props {
   tenantId: string;
   projectId: string;
+  memberProject: MemberProject[];
   task: Task[];
+  unmemberProjects: UnmemberProject[];
 }
 
-export default function ProjectTabs({ tenantId, projectId, task }: Props) {
+export default function ProjectTabs({
+  tenantId,
+  projectId,
+  memberProject,
+  task,
+  unmemberProjects,
+}: Props) {
   const [activeTab, setActiveTab] = useState<'TASK' | 'MEMBER'>('TASK');
   const setTasks = useTaskStore((state) => state.setTasks);
+  const { setMemberProjects, setUnmemberProjects } = useProjectStore();
   useEffect(() => {
     setTasks(task);
-    console.log('task detail project tab', task);
-  }, [task, setTasks]);
+    setMemberProjects(memberProject);
+    setUnmemberProjects(unmemberProjects);
+  }, [task, setTasks, memberProject, unmemberProjects]);
   return (
     <>
-      <div className="flex gap-2 border-b border-gray-200 dark:border-gray-800">
+      {/* Tab Navigation */}
+      <div
+        className="
+      rounded-3xl
+      border border-white/40 dark:border-gray-800
+      bg-white/80 dark:bg-gray-900/80
+    
+      shadow-sm
+      p-2
+      flex gap-2
+    ">
+        {/* TASK TAB */}
         <button
           onClick={() => setActiveTab('TASK')}
-          className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-            activeTab === 'TASK'
-              ? 'bg-white dark:bg-gray-900 border border-b-0 border-gray-200 dark:border-gray-800 text-black dark:text-white'
-              : 'text-gray-500'
-          }`}>
+          className={`
+        flex-1
+        rounded-2xl
+        px-4 py-3
+        text-sm font-semibold
+        transition-all
+        cursor-pointer
+        ${
+          activeTab === 'TASK'
+            ? `
+              bg-linear-to-r from-blue-600 to-indigo-600
+              text-white
+              shadow-lg shadow-blue-500/20
+            `
+            : `
+              text-gray-600 dark:text-gray-400
+              hover:bg-gray-100 dark:hover:bg-gray-800
+            `
+        }
+      `}>
           Tasks
         </button>
 
+        {/* MEMBER TAB */}
         <button
           onClick={() => setActiveTab('MEMBER')}
-          className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-            activeTab === 'MEMBER'
-              ? 'bg-white dark:bg-gray-900 border border-b-0 border-gray-200 dark:border-gray-800 text-black dark:text-white'
-              : 'text-gray-500'
-          }`}>
+          className={`
+        flex-1
+        rounded-2xl
+        px-4 py-3
+        text-sm font-semibold
+        transition-all
+        cursor-pointer
+        ${
+          activeTab === 'MEMBER'
+            ? `
+              bg-linear-to-r from-blue-600 to-indigo-600
+              text-white
+              shadow-lg shadow-blue-500/20
+            `
+            : `
+              text-gray-600 dark:text-gray-400
+              hover:bg-gray-100 dark:hover:bg-gray-800
+            `
+        }
+      `}>
           Members
         </button>
       </div>
 
-      <div className="p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm">
+      {/* Content */}
+      <div
+        className="
+      mt-5
+      rounded-3xl
+      border border-white/40 dark:border-gray-800
+      bg-white/80 dark:bg-gray-900/80
+      
+      shadow-sm
+      p-5
+    ">
         {activeTab === 'TASK' ? (
           <TaskSection
             tenantId={tenantId}
@@ -53,7 +118,7 @@ export default function ProjectTabs({ tenantId, projectId, task }: Props) {
             refreshKey={0}
           />
         ) : (
-          <MemberSection />
+          <MemberView />
         )}
       </div>
     </>

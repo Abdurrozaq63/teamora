@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     if (!ownerRole) {
       return NextResponse.json(
         { message: 'Role owner tidak ditemukan' },
-        { status: 500 },
+        { status: 402 },
       );
     }
 

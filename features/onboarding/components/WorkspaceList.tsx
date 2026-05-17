@@ -10,7 +10,7 @@ export default function WorkspaceList({ tenants }: Props) {
   return (
     <>
       {tenants.map((tenant) => (
-        <WorkspaceCard key={tenant.id} workspace={tenant} />
+        <WorkspaceCard key={tenant.tenantId} workspace={tenant} />
       ))}
     </>
   );

@@ -8,6 +8,8 @@ import ProjectHeader from '@/features/project/components/DetailHeaderProject';
 
 import ProjectTabs from '@/features/project/components/DetailProjectTabs';
 import { getTaskList } from '@/features/task/services/task-list';
+import { memberProjectList } from '@/features/project/services/member-list.service';
+import { unmemberProject } from '@/features/project/services/unmember-project.service';
 
 interface Props {
   params: Promise<{
@@ -35,16 +37,24 @@ export default async function ProjectDetailPage({ params }: Props) {
     projectId,
     userId: session.user.id,
   });
+  const unmemberProjects = await unmemberProject({ tenantId, projectId });
+  const memberProject = await memberProjectList({ tenantId, projectId });
 
-  if (!project || !task) {
-    redirect(`/${tenantId}/projects`);
+  if (!project) {
+    redirect(`/${tenantId}/projects?error=forbidden`);
   }
 
   return (
     <div className="space-y-6">
       <ProjectHeader project={project} />
 
-      <ProjectTabs tenantId={tenantId} projectId={projectId} task={task} />
+      <ProjectTabs
+        tenantId={tenantId}
+        projectId={projectId}
+        task={task}
+        memberProject={memberProject}
+        unmemberProjects={unmemberProjects}
+      />
     </div>
   );
 }

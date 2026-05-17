@@ -4,14 +4,14 @@ export interface Membership {
   tenantId: string;
   roleId: string;
   status: string;
-  joinedAt: string;
+  joinedAt: Date;
 
   tenant: {
     id: string;
     name: string;
     inviteCode: string;
-    createdAt: string;
-    deletedAt: string | null;
+    createdAt: Date;
+    deletedAt: Date | null;
   };
 
   role: {

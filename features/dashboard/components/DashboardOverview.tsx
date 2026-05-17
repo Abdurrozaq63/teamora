@@ -8,11 +8,16 @@ import RecentProjects from './RecentProjects';
 
 import RecentActivity from './RecentActivity';
 
+import { getDashboardStats } from '../services/StatDashboard.service';
+
 interface Props {
   membership: Membership;
 }
 
-export default function DashboardOverview({ membership }: Props) {
+export default async function DashboardOverview({ membership }: Props) {
+  const statDashboard = await getDashboardStats({
+    tenantId: membership.tenantId,
+  });
   return (
     <div className="space-y-6">
       <div>
@@ -23,9 +28,9 @@ export default function DashboardOverview({ membership }: Props) {
 
       <TenantInfoCard membership={membership} />
 
-      <StatsCards />
+      <StatsCards stats={statDashboard} />
 
-      <RecentProjects />
+      {/* <RecentProjects /> */}
 
       <RecentActivity />
     </div>

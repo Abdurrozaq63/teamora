@@ -20,9 +20,9 @@ export default function Navbar({ menus = [] }: NavbarProps) {
         {/* Logo */}
         <Link href="/" className="flex items-center text-xl">
           <span className="font-bold dark:text-white">Team</span>
-          <span className="dark:text-white">Ora</span>
-          <span className="ml-1 rounded-lg border-2 border-lime-600 px-1 text-base font-medium text-lime-600 dark:border-lime-500 dark:text-lime-500">
-            1.0
+
+          <span className=" rounded-lg border-2 border-lime-600 px-1 text-base font-medium text-lime-600 dark:border-lime-500 dark:text-lime-500">
+            Ora
           </span>
         </Link>
 
@@ -41,11 +41,11 @@ export default function Navbar({ menus = [] }: NavbarProps) {
                   ) : (
                     <button
                       onClick={() => {
-                        if (menu.action === 'logout') {
+                        if (menu.name === 'Logout') {
                           logout();
                         }
                       }}
-                      className="text-gray-500 transition hover:text-gray-700 dark:text-white dark:hover:text-white/75">
+                      className="text-gray-500 transition cursor-pointer hover:text-gray-700 dark:text-white dark:hover:text-white/75">
                       {menu.name}
                     </button>
                   )}

@@ -1,10 +1,20 @@
 'use client';
 import { useEffect, useState } from 'react';
 import CreateTask from '@/features/task/components/CreateTask';
+import Modal from '@/app/components/modal';
 
 const statuses = ['TODO', 'IN_PROGRESS', 'REVIEW', 'DONE'];
+interface Props {
+  tenantId: string;
+  projectId: string;
+  refreshKey: string;
+}
 
-export default function TaskSection({ refreshKey }: { refreshKey: number }) {
+export default function TaskSection({
+  tenantId,
+  projectId,
+  refreshKey,
+}: Props) {
   useEffect(() => {}, [refreshKey]);
   const [openModal, setOpenModal] = useState(false);
   return (

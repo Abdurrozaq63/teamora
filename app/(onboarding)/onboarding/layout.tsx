@@ -13,7 +13,7 @@ export default function DashboardLayout({
   return (
     <>
       <Navbar menus={menus} />
-      <main className="p-6">{children}</main>
+      <main className="">{children}</main>
     </>
   );
 }

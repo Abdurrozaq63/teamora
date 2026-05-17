@@ -1,7 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-
+import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { Project } from '../types/project.type';
 
 interface Props {
@@ -10,41 +12,142 @@ interface Props {
 
 export default function ProjectCard({ project }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('error')) {
+      toast.error('Access Forbidden');
+    }
+  }, []);
 
   return (
-    <div className="p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition">
-      <h3 className="font-semibold text-lg text-gray-800 dark:text-white">
-        {project.name}
-      </h3>
+    <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
+          Projects
+        </h2>
 
-      <p className="text-sm text-gray-500 mb-2">{project.description}</p>
-
-      <div className="text-sm text-gray-500 space-y-1 mb-3">
-        <p>Status: Active</p>
-
-        <p>Total Tasks: 12</p>
-
-        <p>Created By: Admin</p>
-
-        <p>Last Updated: 2 days ago</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Manage and monitor your projects
+        </p>
       </div>
 
-      <div className="flex gap-2">
-        <button
-          onClick={() =>
-            router.push(`/${project.tenantId}/projects/${project.id}`)
-          }
-          className="px-3 py-1 text-sm rounded cursor-pointer bg-black text-white">
-          View
-        </button>
+      {/* Desktop / Tablet Header */}
+      <div className="hidden md:grid grid-cols-4 gap-4 px-4 py-3 bg-gray-100 dark:bg-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-300">
+        <span>Project</span>
+        <span>Status</span>
+        <span>Total Tasks</span>
+        <span>Action</span>
+      </div>
 
-        <button className="px-3 py-1 cursor-pointer text-sm rounded border">
-          Edit
-        </button>
+      {/* Content */}
+      <div className="divide-y divide-gray-200 dark:divide-gray-800">
+        {/* Desktop / Tablet Layout */}
+        <div
+          className="
+        hidden md:grid
+        grid-cols-4 gap-4 items-center
+        px-4 py-4
+        hover:bg-gray-50 dark:hover:bg-gray-800/40
+        transition-colors
+      ">
+          {/* Project */}
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+              {project.name}
+            </h3>
 
-        <button className="px-3 py-1 text-sm rounded border cursor-pointer text-red-500">
-          Delete
-        </button>
+            <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-1">
+              {project.description}
+            </p>
+          </div>
+
+          {/* Status */}
+          <div>
+            <span className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+              Active
+            </span>
+          </div>
+
+          {/* Tasks */}
+          <div>
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
+              12 Tasks
+            </span>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() =>
+                router.push(`/${project.tenantId}/projects/${project.id}`)
+              }
+              className="px-3 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-90 transition-opacity cursor-pointer">
+              View
+            </button>
+
+            <button className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+              Edit
+            </button>
+
+            <button className="px-3 py-2 rounded-lg border border-red-200 dark:border-red-900/50 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer">
+              Delete
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="md:hidden p-4 space-y-4">
+          {/* Top */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                {project.name}
+              </h3>
+
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                {project.description}
+              </p>
+            </div>
+
+            <span className="shrink-0 inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+              Active
+            </span>
+          </div>
+
+          {/* Info */}
+          <div className="rounded-xl bg-gray-50 dark:bg-gray-800/50 px-3 py-3">
+            <p className="text-[11px] uppercase tracking-wide text-gray-400 mb-1">
+              Total Tasks
+            </p>
+
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              12 Tasks
+            </p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() =>
+                router.push(`/${project.tenantId}/projects/${project.id}`)
+              }
+              className="w-full px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-90 transition-opacity cursor-pointer">
+              View
+            </button>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+                Edit
+              </button>
+
+              <button className="px-4 py-2 rounded-xl border border-red-200 dark:border-red-900/50 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

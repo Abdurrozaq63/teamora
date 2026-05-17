@@ -1,7 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { checkProjectAccess } from '../projectAccess';
+import { createMemberProject } from '@/features/project/services/create-member.service';
 
 export async function POST(
   req: NextRequest,
@@ -14,26 +13,17 @@ export async function POST(
     if (!session) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    const result = await checkProjectAccess({
-      userId: session.user.id,
+    const body = await req.json();
+    const addMember = await createMemberProject({
       tenantId,
       projectId,
-    });
-
-    if (!result.ok) {
-      return NextResponse.json({ message: result.reason }, { status: 403 });
-    }
-    const addMember = await prisma.projectMember.create({
-      data: {
-        userId: session.user.id,
-        projectId,
-        role: 'ADMIN',
-      },
+      userId: session.user.id,
+      bodyUserId: body,
     });
     if (!addMember) {
       return NextResponse.json(
         { message: 'gagal menambahkan member poject' },
-        { status: 402 },
+        { status: 403 },
       );
     }
     return NextResponse.json({ message: 'member berhasil ditambahkan' });

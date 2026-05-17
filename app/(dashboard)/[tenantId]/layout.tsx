@@ -1,5 +1,6 @@
 import Navbar from '@/app/components/navbar';
 import Sidebar from '@/app/components/sidebar';
+import DashboardShell from '@/app/components/DashboardShell';
 
 export type Role = 'OWNER' | 'ADMIN' | 'MEMBER';
 
@@ -22,7 +23,6 @@ export default async function DashboardLayout({
   const menus: MenuItem[] = [
     { name: 'Dashboard', href: `/${tenantId}` },
     { name: 'Projects', href: `/${tenantId}/projects` },
-    { name: 'Tasks', href: `/${tenantId}/tasks` },
     { name: 'Members', href: `/${tenantId}/members` },
     {
       name: 'Audit Logs',
@@ -47,13 +47,9 @@ export default async function DashboardLayout({
         <Navbar menus={menuNav} />
       </header>
 
-      <div className="flex flex-1">
-        <aside className="w-64 h-[calc(100vh-64px)] sticky top-16">
-          <Sidebar role={role} menus={menus} />
-        </aside>
-
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
-      </div>
+      <DashboardShell sidebar={<Sidebar role={role} menus={menus} />}>
+        {children}
+      </DashboardShell>
     </div>
   );
 }
