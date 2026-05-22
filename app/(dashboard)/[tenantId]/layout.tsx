@@ -15,7 +15,7 @@ export default async function DashboardLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { tenantId: string };
+  params: Promise<{ tenantId: string }>;
 }) {
   const { tenantId } = await params;
   const role: 'OWNER' | 'ADMIN' | 'MEMBER' = 'OWNER'; // ambil dari session / DB
