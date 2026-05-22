@@ -1,6 +1,7 @@
 import { assigneeList } from './assignee-list.service';
 import { memberProjectList } from '@/features/project/services/member-list.service';
 import {taskAssignee} from '../types/task-assignees.type'
+import { UnassigneeTask } from '../types/task-unassignee.type';
 
 interface Props {
   tenantId: string;
@@ -13,7 +14,9 @@ export async function assigneed({ tenantId, projectId, taskId }: Props) {
 
   const assigneedList = new Set(listAssigne.map((x: taskAssignee) => x.id));
 
-  const hasil = listProject.filter((x) => !assigneedList.has(x.id));
+  const hasil: UnassigneeTask[] = listProject.filter(
+    (x) => !assigneedList.has(x.id),
+  );
   console.log('assigneed', hasil);
 
   return hasil;
