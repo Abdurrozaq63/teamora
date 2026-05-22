@@ -21,7 +21,6 @@ export default function ProjectPageView({ tenantId, initialProjects }: Props) {
   const [projects, setProjects] = useState(initialProjects);
 
   const [openModal, setOpenModal] = useState(false);
-
   return (
     <div className="space-y-6">
       <ProjectHeader onCreate={() => setOpenModal(true)} />

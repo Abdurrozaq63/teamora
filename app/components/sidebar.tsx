@@ -25,7 +25,7 @@ export default function Sidebar({ role, menus }: SidebarProps) {
   });
 
   return (
-    <aside className="h-screen w-64 border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 p-4">
+    <aside className=" w-64 border-r border-gray-200   dark:border-gray-800 p-4">
       <nav>
         <ul className="space-y-1">
           {filteredMenus.map((menu) => {

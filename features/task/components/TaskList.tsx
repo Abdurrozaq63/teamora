@@ -44,21 +44,9 @@ export default function TaskList({ refreshKey, tenantId, projectId }: Props) {
         {/* Action */}
         <button
           onClick={() => setOpenModal(true)}
-          className="
-      inline-flex items-center justify-center gap-2
-      rounded-2xl
-      bg-linear-to-r from-blue-600 to-indigo-600
-      px-5 py-3
-      text-sm font-semibold text-white
-      shadow-lg shadow-blue-500/20
-      hover:opacity-90
-      transition-all
-      cursor-pointer
-      w-full sm:w-auto
-    ">
-          <span className="text-base leading-none">+</span>
-
-          <span>Create Task</span>
+          className="flex justify-center items-center gap-2 rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:opacity-90 transition-all cursor-pointer w-full sm:w-auto">
+          {/* <span className="text-base leading-none">+</span> */}
+          <span className="p-0">Create Task</span>
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

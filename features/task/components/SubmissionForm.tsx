@@ -4,7 +4,7 @@ export default function SubmissionForm() {
     <div className="lg:col-span-2">
       <div
         className="
-      lg:sticky lg:top-6
+      lg:sticky lg:top-18
       rounded-3xl
       border border-white/40 dark:border-gray-800
       bg-white/80 dark:bg-gray-900/80

@@ -138,7 +138,7 @@ export default function CreateMember() {
                       x.tenantId,
                     )
                   }
-                  className="p-2 cursor-pointer rounded-full bg-gray-900 dark:bg-white  hover:scale-105 active:scale-95 transition-transform">
+                  className="p-2 cursor-pointer rounded-full bg-gray-900 dark:bg-white  hover:scale-105 active:scale-95 ">
                   <span className="text-white dark:text-black text-2xl">
                     {loading ? 'o' : '+'}
                   </span>

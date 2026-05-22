@@ -25,12 +25,16 @@ export default function DashboardShell({ sidebar, children }: Props) {
       <aside
         className={`
           fixed lg:sticky
-          top-16 left-0
+           left-0
           z-50 lg:z-0
+          top-16
+          
           h-[calc(100vh-64px)]
           w-64
+          self-start
+          
           transition-transform duration-300
-          bg-white dark:bg-gray-950
+          bg-white dark:bg-gray-900/50
           border-r border-gray-200 dark:border-gray-800
 
           ${open ? 'translate-x-0' : '-translate-x-full'}
