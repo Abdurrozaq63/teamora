@@ -10,11 +10,11 @@ interface Props {
 }
 export async function assigneed({ tenantId, projectId, taskId }: Props) {
   const listAssigne = await assigneeList(taskId);
-  const listProject = await memberProjectList({ tenantId, projectId });
+  const listProject: UnassigneeTask[] = await memberProjectList({ tenantId, projectId });
 
   const assigneedList = new Set(listAssigne.map((x: taskAssignee) => x.id));
 
-  const hasil: UnassigneeTask[] = listProject.filter(
+  const hasil = listProject.filter(
     (x) => !assigneedList.has(x.id),
   );
   console.log('assigneed', hasil);
