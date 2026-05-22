@@ -5,7 +5,6 @@ import DetailTaskHeader from './DetailTaskHeader';
 import SubmissionForm from './SubmissionForm';
 import { useTaskStore } from '../store/useTaskStore';
 import { useEffect } from 'react';
-import { Task } from '@/app/generated/prisma/client';
 import { taskAssignee } from '../types/task-assignees.type';
 import { DetailTaskProps } from '../types/detail-task.type';
 
