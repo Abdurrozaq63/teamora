@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 
 interface Props {
   tenantId: string;
@@ -13,24 +14,26 @@ export async function createProject({
   description,
   userId,
 }: Props) {
-  const project = await prisma.$transaction(async (tx) => {
-    const project = await tx.project.create({
-      data: {
-        tenantId,
-        name,
-        description,
-        createdBy: userId,
-      },
-    });
-    await tx.projectMember.create({
-      data: {
-        userId,
-        projectId: project.id,
-        role: 'ADMIN',
-      },
-    });
-    return project;
-  });
+  const project = await prisma.$transaction(
+    async (tx: Prisma.TransactionClient) => {
+      const project = await tx.project.create({
+        data: {
+          tenantId,
+          name,
+          description,
+          createdBy: userId,
+        },
+      });
+      await tx.projectMember.create({
+        data: {
+          userId,
+          projectId: project.id,
+          role: 'ADMIN',
+        },
+      });
+      return project;
+    },
+  );
 
   return project;
 }

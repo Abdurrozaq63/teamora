@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 
 interface CreateWorkspaceParams {
   userId: string;
@@ -16,24 +17,26 @@ export async function createWorkspace({ userId, name }: CreateWorkspaceParams) {
     throw new Error('Role owner tidak ditemukan');
   }
 
-  const tenant = await prisma.$transaction(async (tx) => {
-    const tenant = await tx.tenant.create({
-      data: {
-        name,
-      },
-    });
+  const tenant = await prisma.$transaction(
+    async (tx: Prisma.TransactionClient) => {
+      const tenant = await tx.tenant.create({
+        data: {
+          name,
+        },
+      });
 
-    await tx.membership.create({
-      data: {
-        userId,
-        tenantId: tenant.id,
-        roleId: ownerRole.id,
-        status: 'ACTIVE',
-      },
-    });
+      await tx.membership.create({
+        data: {
+          userId,
+          tenantId: tenant.id,
+          roleId: ownerRole.id,
+          status: 'ACTIVE',
+        },
+      });
 
-    return tenant;
-  });
+      return tenant;
+    },
+  );
 
   return tenant;
 }
