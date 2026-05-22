@@ -41,7 +41,7 @@ export async function middleware(req: NextRequest) {
     isLoggedIn &&
     (pathname.startsWith('/login') || pathname.startsWith('/register'))
   ) {
-    return NextResponse.redirect(new URL('/dashboard', nextUrl));
+    return NextResponse.redirect(new URL('/onboarding', nextUrl));
   }
 
   return NextResponse.next();
