@@ -39,13 +39,5 @@ export async function detailTask({
       },
     },
   });
-  // if (!x) {
-  //   return notFound();
-  //   // return {
-  //   //   message: 'something problem on finding data',
-  //   //   reason: x,
-  //   //   ok: false,
-  //   // };
-  // }
   return x;
 }

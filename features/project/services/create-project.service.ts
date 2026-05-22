@@ -31,6 +31,6 @@ export async function createProject({
     });
     return project;
   });
-  console.log('createproject :', project);
+
   return project;
 }

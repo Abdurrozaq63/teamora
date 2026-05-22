@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
     const inviteCode = await req.json();
     const membership = await joinTenant(inviteCode);
     if (!membership) {
-      return null;
+      throw Error;
     }
     console.log(`invite code ${inviteCode}`);
     return NextResponse.json({

@@ -20,20 +20,19 @@ export async function addAssignee({
   const cekRole = await accessCheck({ tenantId, projectId, userId });
   const role = cekRole.role;
 
-  console.log(`server taskId: ${taskId}, userId: ${bodyUserId}`);
   if (!cekRole && role != 'ADMIN') {
     return { message: 'forbidden Role', reason: role };
   }
 
   //add
-  console.log('cek add');
+
   const add = await prisma.taskAssignee.create({
     data: {
       taskId,
       userId: bodyUserId,
     },
   });
-  console.log('cek after add', add);
+
   if (!add) {
     return { message: 'failed add assignee' };
   }

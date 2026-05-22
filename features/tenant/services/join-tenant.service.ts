@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 export async function joinTenant(inviteCode: string) {
   const session = await auth();
   if (!session) {
-    return null;
+    throw Error;
   }
 
   const tenant = await prisma.tenant.findFirst({
@@ -12,7 +12,7 @@ export async function joinTenant(inviteCode: string) {
   });
 
   if (!tenant) {
-    return null;
+    throw Error;
   }
 
   const memberRole = await prisma.role.findUnique({
@@ -20,7 +20,7 @@ export async function joinTenant(inviteCode: string) {
   });
 
   if (!memberRole) {
-    return null;
+    throw Error;
   }
 
   await prisma.membership.create({
