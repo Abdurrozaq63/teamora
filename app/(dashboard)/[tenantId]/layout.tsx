@@ -38,7 +38,7 @@ export default async function DashboardLayout({
   const menuNav = [
     { name: 'Profile', href: '/profile' },
     { name: 'Settings', href: '/settings' },
-    { name: 'Logout' },
+    { name: 'Logout', action: 'logout' },
   ];
 
   return (

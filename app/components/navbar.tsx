@@ -5,7 +5,7 @@ import Link from 'next/link';
 type MenuItem = {
   name: string;
   href?: string;
-  action?: 'logout';
+  action?: string;
 };
 
 type NavbarProps = {
@@ -41,7 +41,7 @@ export default function Navbar({ menus = [] }: NavbarProps) {
                   ) : (
                     <button
                       onClick={() => {
-                        if (menu.name === 'Logout') {
+                        if (menu.action === 'logout') {
                           logout();
                         }
                       }}
