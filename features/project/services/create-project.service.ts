@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
 
 interface Props {
   tenantId: string;
@@ -15,7 +14,9 @@ export async function createProject({
   userId,
 }: Props) {
   const project = await prisma.$transaction(
-    async (tx: Prisma.TransactionClient) => {
+    async (tx: Parameters<
+    Parameters<typeof prisma.$transaction>[0]
+  >[0]) => {
       const project = await tx.project.create({
         data: {
           tenantId,

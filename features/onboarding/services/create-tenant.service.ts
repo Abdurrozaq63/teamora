@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
 
 interface CreateWorkspaceParams {
   userId: string;
@@ -18,7 +17,9 @@ export async function createWorkspace({ userId, name }: CreateWorkspaceParams) {
   }
 
   const tenant = await prisma.$transaction(
-    async (tx: Prisma.TransactionClient) => {
+    async (tx: Parameters<
+    Parameters<typeof prisma.$transaction>[0]
+  >[0]) => {
       const tenant = await tx.tenant.create({
         data: {
           name,
