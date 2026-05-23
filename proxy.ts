@@ -30,8 +30,8 @@ export default async function proxy(req: NextRequest) {
     token = await getToken({
       req,
       secret: process.env.AUTH_SECRET,
-      // secureCookie: isProduction,
-      // cookieName: cookieName, // Paksa baca cookie yang sesuai lingkungan
+      secureCookie: isProduction,
+      cookieName: cookieName, // Paksa baca cookie yang sesuai lingkungan
     });
   } catch (error) {
     // Jangan disembunyikan, cetak di log Vercel untuk memantau jika ada error internal
