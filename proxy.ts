@@ -13,7 +13,7 @@ import { getToken } from 'next-auth/jwt';
 const publicRoutes = ['/', '/login', '/register'];
 const onboardingRoutes = ['/onboarding'];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { nextUrl } = req;
   const pathname = nextUrl.pathname;
 
