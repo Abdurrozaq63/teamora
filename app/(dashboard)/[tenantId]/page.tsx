@@ -6,8 +6,6 @@ import { requireTenantAccess } from '@/features/dashboard/permissions/tenant-acc
 
 import DashboardOverview from '@/features/dashboard/components/DashboardOverview';
 
-export const dynamic = 'force-dynamic';
-
 export default async function DashboardPage({
   params,
 }: {
@@ -15,9 +13,12 @@ export default async function DashboardPage({
     tenantId: string;
   }>;
 }) {
+  console.log('berhasil mengunjungi dashboard');
   const session = await auth();
+  console.log('berhasil membaca session', session);
 
   if (!session) {
+    console.log('session tidak valid', session);
     redirect('/login');
   }
 
