@@ -91,6 +91,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.tenantId = membership?.tenantId ?? null;
         token.tenantName = membership?.tenant.name ?? null;
       }
+      
       return token;
     },
 
@@ -101,6 +102,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.tenantId = token.tenantId as string | null;
         session.user.tenantName = token.tenantName as string | null;
       }
+     
       return session;
     },
   },
