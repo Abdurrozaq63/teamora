@@ -17,15 +17,23 @@ export async function proxy(req: NextRequest) {
   const { nextUrl } = req;
   const pathname = nextUrl.pathname;
 
-  // Bungkus dengan try-catch agar jika dekripsi token gagal di Edge Runtime, aplikasi tidak langsung crash 500
+  // Cek apakah berjalan di production (HTTPS)
+  const isProduction = process.env.NODE_ENV === 'production';
+  const cookieName = isProduction
+    ? '__Secure-next-auth.session-token'
+    : 'next-auth.session-token';
+
   let token = null;
   try {
     token = await getToken({
       req,
       secret: process.env.AUTH_SECRET,
+      secureCookie: isProduction,
+      cookieName: cookieName, // Paksa baca cookie yang sesuai lingkungan
     });
   } catch (error) {
-    console.error('Middleware JWT Error:', error);
+    // Jangan disembunyikan, cetak di log Vercel untuk memantau jika ada error internal
+    console.error('Middleware JWT Error secara detail:', error);
   }
 
   const isLoggedIn = !!token;
