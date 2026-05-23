@@ -25,6 +25,7 @@ export async function proxy(req: NextRequest) {
     : 'next-auth.session-token';
 
   let token = null;
+  console.log('cek auth secret', process.env.AUTH_SECRET);
   try {
     token = await getToken({
       req,
