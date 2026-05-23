@@ -16,6 +16,7 @@ const onboardingRoutes = ['/onboarding'];
 export async function proxy(req: NextRequest) {
   const { nextUrl } = req;
   const pathname = nextUrl.pathname;
+  console.log('akses proxy');
 
   // Cek apakah berjalan di production (HTTPS)
   const isProduction = process.env.NODE_ENV === 'production';
@@ -35,7 +36,7 @@ export async function proxy(req: NextRequest) {
     // Jangan disembunyikan, cetak di log Vercel untuk memantau jika ada error internal
     console.error('Middleware JWT Error secara detail:', error);
   }
-
+  console.log('token prody', token);
   const isLoggedIn = !!token;
 
   // PERBAIKAN DI SINI: Deteksi rute publik secara presisi
@@ -50,6 +51,7 @@ export async function proxy(req: NextRequest) {
 
   // 1. User BELUM login dan mencoba mengakses halaman privat
   if (!isLoggedIn && !isPublicRoute) {
+    console.log('belum login', token);
     return NextResponse.redirect(new URL('/login', nextUrl));
   }
 
@@ -58,6 +60,7 @@ export async function proxy(req: NextRequest) {
     isLoggedIn &&
     (pathname.startsWith('/login') || pathname.startsWith('/register'))
   ) {
+    console.log('user sudah login mencoba akses login atau register', token);
     return NextResponse.redirect(new URL('/onboarding', nextUrl));
   }
 
