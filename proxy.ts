@@ -21,11 +21,11 @@ export default async function proxy(req: NextRequest) {
   // Cek apakah berjalan di production (HTTPS)
   const isProduction = process.env.NODE_ENV === 'production';
   const cookieName = isProduction
-    ? '__Secure-next-auth.session-token'
-    : 'next-auth.session-token';
+    ? '__Secure-authjs.session-token'
+    : 'authjs.session-token';
 
   let token = null;
-  console.log('cek auth secret', process.env.AUTH_SECRET);
+  console.log('cookiename', cookieName);
   try {
     token = await getToken({
       req,
