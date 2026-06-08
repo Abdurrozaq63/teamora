@@ -1,4 +1,5 @@
 import { taskAssignee } from './task-assignees.type';
+import { TaskSubmissions } from './task-submissions.type';
 export interface DetailTaskProps {
   id: string;
   tenantId: string;
@@ -11,4 +12,5 @@ export interface DetailTaskProps {
   deletedAt: Date | null;
   messageReview: string | null;
   taskAssignees: taskAssignee[];
+  taskSubmissions: TaskSubmissions[];
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Modal from '@/app/components/modal';
 
@@ -10,28 +10,42 @@ import ProjectHeader from './ProjectHeader';
 import ProjectFilterBar from './ProjectFilterBar';
 import ProjectGrid from './ProjectGrid';
 
-import CreateProject from '@/features/project/components/create-project';
+import ProjectForm from './FormProject';
+import { useTenantStore } from '@/features/tenant/store/useTenantStore';
 
 interface Props {
   tenantId: string;
+  roleTenant: string;
   initialProjects: Project[];
 }
 
-export default function ProjectPageView({ tenantId, initialProjects }: Props) {
+export default function ProjectPageView({
+  tenantId,
+  initialProjects,
+  roleTenant,
+}: Props) {
   const [projects, setProjects] = useState(initialProjects);
+  const { setRoleTenant } = useTenantStore();
+  useEffect(() => {
+    setRoleTenant(roleTenant);
+  }, [roleTenant]);
 
   const [openModal, setOpenModal] = useState(false);
   return (
     <div className="space-y-6">
-      <ProjectHeader onCreate={() => setOpenModal(true)} />
+      <ProjectHeader
+        onCreate={() => setOpenModal(true)}
+        roleTenant={roleTenant}
+      />
 
       <ProjectFilterBar />
 
       <ProjectGrid projects={projects} />
 
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
-        <CreateProject
+        <ProjectForm
           tenantId={tenantId}
+          mode="create"
           onSuccess={(project) => {
             setProjects((prev) => [project, ...prev]);
 

@@ -1,17 +1,30 @@
 'use client';
 import { ProjectDetail } from '../types/detail-project.type';
 import { useProjectStore } from '../store/useProjectStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Modal from '@/app/components/modal';
+import ProjectForm from './FormProject';
+import DeleteProjectModal from './DeleteProject';
+import { Project } from '../types/project.type';
 
 interface Props {
   project: ProjectDetail;
 }
 
 export default function ProjectHeader({ project }: Props) {
-  const { setProjectId } = useProjectStore();
+  const router = useRouter();
+  const { setProjectId, setRoleProject } = useProjectStore();
+  const [detailProject, setDetailProject] = useState<Project>(project.project);
   useEffect(() => {
     setProjectId(project.projectId);
+    setRoleProject(project.role);
   }, [project]);
+
+  const [openModal, setOpenModal] = useState<'edit' | 'delete' | null>(null);
+  const handleEdit = () => {
+    setOpenModal('edit');
+  };
   return (
     <div
       className="
@@ -42,18 +55,20 @@ export default function ProjectHeader({ project }: Props) {
             text-lg font-bold
             shadow-lg shadow-blue-500/20
           ">
-              {project.project.name?.charAt(0).toUpperCase()}
+              {detailProject
+                ? detailProject.name.charAt(0).toUpperCase()
+                : 'no name'}
             </div>
 
             {/* Title */}
             <div className="min-w-0">
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white truncate">
-                {project.project.name}
+                {detailProject.name}
               </h1>
 
-              {project.project.description && (
+              {detailProject.description && (
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
-                  {project.project.description}
+                  {detailProject.description}
                 </p>
               )}
 
@@ -68,7 +83,7 @@ export default function ProjectHeader({ project }: Props) {
                 text-xs font-semibold
                 text-emerald-700 dark:text-emerald-300
               ">
-                  Active
+                  {detailProject.status}
                 </span>
               </div>
             </div>
@@ -76,47 +91,47 @@ export default function ProjectHeader({ project }: Props) {
         </div>
 
         {/* Actions */}
-        <div
-          className="
-        flex flex-col sm:flex-row
-        gap-3
-        w-full lg:w-auto
-      ">
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
           {/* Edit */}
-          <button
-            className="
-          rounded-2xl
-          border border-gray-200 dark:border-gray-700
-          bg-white/70 dark:bg-gray-900
-          px-5 py-3
-          text-sm font-medium
-          text-gray-700 dark:text-gray-300
-          hover:bg-gray-50 dark:hover:bg-gray-800
-          transition-colors
-          cursor-pointer
-          w-full sm:w-auto
-        ">
-            Edit Project
-          </button>
-
+          {project.role === 'ADMIN' && (
+            <button
+              onClick={() => setOpenModal('edit')}
+              className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-900 px-5 py-3 text-sm font-medium         text-gray-700 dark:text-gray-300          hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer w-full sm:w-auto">
+              Edit Project
+            </button>
+          )}
+          {project.role === 'ADMIN' && (
+            <button
+              onClick={() => setOpenModal('delete')}
+              className=" rounded-2xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/10 px-5 py-3 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors cursor-pointer  w-full sm:w-auto">
+              Delete
+            </button>
+          )}
           {/* Delete */}
-          <button
-            className="
-          rounded-2xl
-          border border-red-200 dark:border-red-900/50
-          bg-red-50 dark:bg-red-900/10
-          px-5 py-3
-          text-sm font-medium
-          text-red-600 dark:text-red-400
-          hover:bg-red-100 dark:hover:bg-red-900/20
-          transition-colors
-          cursor-pointer
-          w-full sm:w-auto
-        ">
-            Delete
-          </button>
         </div>
       </div>
+      <Modal isOpen={openModal !== null} onClose={() => setOpenModal(null)}>
+        {openModal === 'edit' && (
+          <ProjectForm
+            tenantId={project.project.tenantId}
+            mode={'edit'}
+            project={project.project}
+            onSuccess={(update) => {
+              setDetailProject(update);
+            }}
+          />
+        )}
+        {openModal === 'delete' && (
+          <DeleteProjectModal
+            tenantId={detailProject.tenantId}
+            projectName={detailProject.name}
+            onClose={() => setOpenModal(null)}
+            onSuccess={() => {
+              router.push(`/${detailProject.tenantId}/projects/`);
+            }}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

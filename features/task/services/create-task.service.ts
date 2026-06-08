@@ -7,6 +7,7 @@ interface Props {
   userId: string;
   title: string;
   description: string;
+  dueDate: Date;
 }
 export async function createTask({
   tenantId,
@@ -14,6 +15,7 @@ export async function createTask({
   userId,
   title,
   description,
+  dueDate,
 }: Props) {
   const check = await accessCheck({
     tenantId,
@@ -29,6 +31,7 @@ export async function createTask({
       projectId,
       title,
       description,
+      dueDate,
     },
   });
   return addTask;

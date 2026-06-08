@@ -3,7 +3,6 @@ import { auth } from '@/lib/auth';
 
 export default async function Home() {
   const session = await auth();
-  console.log('session page.tsx', session);
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">

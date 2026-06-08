@@ -8,8 +8,14 @@ interface Props {
   tenantId: string;
   projectId: string;
   userId: string;
+  roleProject: 'ADMIN' | 'MEMBER' | undefined;
 }
-export default function DetailTask({ tenantId, projectId, userId }: Props) {
+export default function DetailTask({
+  tenantId,
+  projectId,
+  userId,
+  roleProject,
+}: Props) {
   const { detailTask } = useTaskStore();
 
   const handleAdd = () => {
@@ -171,9 +177,10 @@ export default function DetailTask({ tenantId, projectId, userId }: Props) {
                 Assignees
               </h3>
 
-              <button
-                onClick={handleAdd}
-                className="
+              {roleProject === 'ADMIN' && (
+                <button
+                  onClick={handleAdd}
+                  className="
               inline-flex items-center gap-2
               rounded-xl
               bg-linear-to-r from-blue-600 to-indigo-600
@@ -184,10 +191,11 @@ export default function DetailTask({ tenantId, projectId, userId }: Props) {
               transition-opacity
               cursor-pointer
             ">
-                <span className="text-sm">+</span>
+                  <span className="text-sm">+</span>
 
-                <span>Add Member</span>
-              </button>
+                  <span>Add Member</span>
+                </button>
+              )}
             </div>
 
             {/* Assignee List */}
@@ -229,7 +237,10 @@ export default function DetailTask({ tenantId, projectId, userId }: Props) {
       </div>
 
       {/* Submission */}
-      <TaskSubmission />
+      <TaskSubmission
+        submitted={detailTask.taskSubmissions}
+        submittedBy={detailTask.taskAssignees}
+      />
 
       {/* Modal */}
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>

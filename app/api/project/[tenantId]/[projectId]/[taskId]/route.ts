@@ -16,7 +16,6 @@ export async function POST(
     const { tenantId, projectId, taskId } = await context.params;
 
     const body = await req.json();
-    console.log(`route taskId: ${taskId}, userId: ${body}`);
     const add_Assignee = await addAssignee({
       tenantId,
       projectId,

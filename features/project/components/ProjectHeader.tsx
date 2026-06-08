@@ -1,8 +1,9 @@
 interface Props {
+  roleTenant: string;
   onCreate: () => void;
 }
 
-export default function ProjectHeader({ onCreate }: Props) {
+export default function ProjectHeader({ roleTenant, onCreate }: Props) {
   return (
     <div
       className="
@@ -21,24 +22,15 @@ export default function ProjectHeader({ onCreate }: Props) {
       </div>
 
       {/* Action */}
-      <button
-        onClick={onCreate}
-        className="
-      inline-flex items-center justify-center gap-2
-      rounded-2xl
-      bg-linear-to-r from-blue-600 to-indigo-600
-      px-5 py-3
-      text-sm font-semibold text-white
-      shadow-lg shadow-blue-500/20
-      hover:opacity-90
-      transition-all
-      cursor-pointer
-      w-full sm:w-auto
-    ">
-        <span className="text-base leading-none">+</span>
+      {['OWNER', 'ADMIN'].includes(roleTenant) && (
+        <button
+          onClick={onCreate}
+          className="inline-flex items-center justify-center gap-2 rounded-2xl  bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:opacity-90 transition-all cursor-pointer w-full sm:w-auto">
+          <span className="text-base leading-none">+</span>
 
-        <span>Create Project</span>
-      </button>
+          <span>Create Project</span>
+        </button>
+      )}
     </div>
   );
 }

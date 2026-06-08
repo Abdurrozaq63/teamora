@@ -4,9 +4,14 @@ import { useRouter } from 'next/navigation';
 interface Props {
   tenantId: string;
   projectId: string;
+  roleProject: 'ADMIN' | 'MEMBER' | undefined;
 }
 
-export default function DetailTaskHeader({ tenantId, projectId }: Props) {
+export default function DetailTaskHeader({
+  tenantId,
+  projectId,
+  roleProject,
+}: Props) {
   const router = useRouter();
   const handleBack = () => {
     router.push(`/${tenantId}/projects/${projectId}`);
@@ -31,8 +36,6 @@ export default function DetailTaskHeader({ tenantId, projectId }: Props) {
         transition-colors
         cursor-pointer
       ">
-          <span className="text-base">←</span>
-
           <span>Back to Tasks</span>
         </button>
 
@@ -53,15 +56,16 @@ export default function DetailTaskHeader({ tenantId, projectId }: Props) {
       </div>
 
       {/* Actions */}
-      <div
-        className="
+      {roleProject === 'ADMIN' && (
+        <div
+          className="
       flex flex-col sm:flex-row
       gap-3
       w-full lg:w-auto
     ">
-        {/* Edit */}
-        <button
-          className="
+          {/* Edit */}
+          <button
+            className="
         rounded-2xl
         border border-gray-200 dark:border-gray-700
         bg-white/70 dark:bg-gray-900
@@ -73,12 +77,12 @@ export default function DetailTaskHeader({ tenantId, projectId }: Props) {
         cursor-pointer
         w-full sm:w-auto
       ">
-          Edit Task
-        </button>
+            Edit Task
+          </button>
 
-        {/* Done */}
-        <button
-          className="
+          {/* Done */}
+          <button
+            className="
         rounded-2xl
         bg-linear-to-r from-emerald-500 to-green-600
         px-5 py-3
@@ -89,9 +93,10 @@ export default function DetailTaskHeader({ tenantId, projectId }: Props) {
         cursor-pointer
         w-full sm:w-auto
       ">
-          Mark as Done
-        </button>
-      </div>
+            Mark as Done
+          </button>
+        </div>
+      )}
     </div>
   );
 }

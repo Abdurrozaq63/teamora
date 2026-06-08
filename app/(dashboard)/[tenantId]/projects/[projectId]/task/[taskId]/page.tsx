@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { detailTask } from '@/features/task/services/detail-task.service';
 import { assigneed } from '@/features/task/services/assigneed.service';
 import { assigneeList } from '@/features/task/services/assignee-list.service';
+import { accessCheck } from '@/features/task/permissions/task.permissions';
 import { error } from 'console';
 interface Props {
   params: Promise<{
@@ -21,7 +22,11 @@ export default async function DetailTaskPage({ params }: Props) {
 
   const userId = session.user.id;
   const { tenantId, projectId, taskId } = await params;
+  const permission = await accessCheck({ tenantId, projectId, userId });
 
+  if (permission.ok == false) {
+    redirect(`/${tenantId}/projects?error=forbidden`);
+  }
   const [detail, unassignedList, assignedList] = await Promise.all([
     detailTask({ tenantId, projectId, userId, taskId }),
     assigneed({ tenantId, projectId, taskId }),
@@ -37,6 +42,8 @@ export default async function DetailTaskPage({ params }: Props) {
       tenantId={tenantId}
       projectId={projectId}
       userId={userId}
+      taskId={taskId}
+      roleProject={permission.role}
       detailTask={detail}
       listAssigneed={unassignedList}
     />

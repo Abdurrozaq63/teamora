@@ -9,9 +9,7 @@ interface Props {
 export default function ProjectGrid({ projects }: Props) {
   return (
     <div className="space-y-4">
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
+      <ProjectCard projects={projects} />
     </div>
   );
 }

@@ -28,12 +28,14 @@ export default function ProjectTabs({
 }: Props) {
   const [activeTab, setActiveTab] = useState<'TASK' | 'MEMBER'>('TASK');
   const setTasks = useTaskStore((state) => state.setTasks);
-  const { setMemberProjects, setUnmemberProjects } = useProjectStore();
+  const { setMemberProjects, setUnmemberProjects, setTenantId } =
+    useProjectStore();
   useEffect(() => {
     setTasks(task);
     setMemberProjects(memberProject);
     setUnmemberProjects(unmemberProjects);
-  }, [task, setTasks, memberProject, unmemberProjects]);
+    setTenantId(tenantId);
+  }, [task, setTasks, memberProject, unmemberProjects, tenantId]);
   return (
     <>
       {/* Tab Navigation */}

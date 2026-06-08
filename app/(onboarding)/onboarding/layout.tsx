@@ -6,7 +6,6 @@ export default function DashboardLayout({
 }) {
   const menus = [
     { name: 'Profile', href: '/profile' },
-    { name: 'Settings', href: '/settings' },
     { name: 'Logout', action: 'logout' },
   ];
 

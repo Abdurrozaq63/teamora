@@ -1,4 +1,3 @@
-import { accessCheck } from '../permissions/task.permissions';
 import { prisma } from '@/lib/prisma';
 import { Task } from '../types/task.type';
 interface Props {
@@ -13,11 +12,6 @@ export async function detailTask({
   userId,
   taskId,
 }: Props) {
-  //cek permissions
-  const permission = await accessCheck({ tenantId, projectId, userId });
-  if (!permission.ok) {
-    throw new Error('Unauthorized');
-  }
   //ambil task, include assignee, include submission
   const x = await prisma.task.findUniqueOrThrow({
     where: {
@@ -37,6 +31,7 @@ export async function detailTask({
           },
         },
       },
+      taskSubmissions: true,
     },
   });
   return x;

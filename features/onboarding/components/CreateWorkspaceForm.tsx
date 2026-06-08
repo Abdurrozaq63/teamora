@@ -17,7 +17,7 @@ export default function CreateWorkspaceForm({ onCreated }: Props) {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/onboarding/create-tenant', {
+      const res = await fetch('/api/tenant/create-tenant', {
         method: 'POST',
 
         headers: {

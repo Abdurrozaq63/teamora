@@ -1,5 +1,74 @@
 'use client';
-export default function SubmissionForm() {
+import { useState } from 'react';
+import { useUploadThing } from '@/lib/uploadthing-client';
+
+interface SubmissionFormProps {
+  taskId: string;
+  submittedBy: string;
+}
+
+export default function SubmissionForm({
+  taskId,
+  submittedBy,
+}: SubmissionFormProps) {
+  const [content, setContent] = useState('');
+
+  const [file, setFile] = useState<File | null>(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const { startUpload } = useUploadThing('taskSubmissionUploader');
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      let fileUrl: string | undefined;
+
+      /*
+       * Upload file ke UploadThing
+       */
+      if (file) {
+        const uploadedFiles = await startUpload([file]);
+
+        fileUrl = uploadedFiles?.[0]?.ufsUrl;
+      }
+
+      /*
+       * Simpan data submission ke database
+       */
+      const response = await fetch('/api/task-submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          taskId,
+          content,
+          fileUrl,
+          submittedBy,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create submission');
+      }
+
+      setContent('');
+      setFile(null);
+
+      alert('Submission created');
+    } catch (error) {
+      console.error(error);
+
+      alert('Failed create submission');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="lg:col-span-2">
       <div
@@ -12,22 +81,18 @@ export default function SubmissionForm() {
       shadow-sm
       overflow-hidden
     ">
-        {/* Header */}
         <div className="p-5 sm:p-6 border-b border-gray-200 dark:border-gray-800">
           <div>
             <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
               Submit Your Work
             </h3>
-
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Upload your progress and submission files
             </p>
           </div>
         </div>
 
-        {/* Form */}
-        <form className="p-5 sm:p-6 space-y-5">
-          {/* Content */}
+        <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-5">
           <div className="space-y-2">
             <label
               className="
@@ -39,6 +104,8 @@ export default function SubmissionForm() {
 
             <textarea
               rows={6}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
               placeholder="Write your submission details here..."
               className="
             w-full rounded-2xl
@@ -55,8 +122,6 @@ export default function SubmissionForm() {
           "
             />
           </div>
-
-          {/* File Upload */}
           <div className="space-y-2">
             <label
               className="
@@ -76,6 +141,13 @@ export default function SubmissionForm() {
           ">
               <input
                 type="file"
+                onChange={(e) => {
+                  const selectedFile = e.target.files?.[0];
+
+                  if (selectedFile) {
+                    setFile(selectedFile);
+                  }
+                }}
                 className="
               w-full
               text-sm text-gray-700 dark:text-gray-300
@@ -100,10 +172,9 @@ export default function SubmissionForm() {
               </p>
             </div>
           </div>
-
-          {/* Action */}
           <button
             type="submit"
+            disabled={loading}
             className="
           w-full
           rounded-2xl
@@ -114,8 +185,9 @@ export default function SubmissionForm() {
           hover:opacity-90
           transition-opacity
           cursor-pointer
+          disabled:opacity-50
         ">
-            Submit Work
+            {loading ? 'Submitting...' : 'Submit Work'}
           </button>
         </form>
       </div>

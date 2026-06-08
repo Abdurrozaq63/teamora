@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
-import CreateTask from '@/features/task/components/CreateTask';
+import FormTask from '@/features/task/components/FormTask';
 import { useTaskStore } from '../store/useTaskStore';
+import { useProjectStore } from '@/features/project/store/useProjectStore';
 import Modal from '@/app/components/modal';
 import { Task } from '../types/task.type';
 import { useRouter } from 'next/navigation';
@@ -16,6 +17,7 @@ export default function TaskList({ refreshKey, tenantId, projectId }: Props) {
   const router = useRouter();
   const tasks = useTaskStore((state) => state.tasks);
   const setTask = useTaskStore((state) => state.setTask);
+  const { roleProject } = useProjectStore();
 
   const handleClickView = (taskId: string) => {
     router.push(`/${tenantId}/projects/${projectId}/task/${taskId}`);
@@ -42,12 +44,14 @@ export default function TaskList({ refreshKey, tenantId, projectId }: Props) {
         </div>
 
         {/* Action */}
-        <button
-          onClick={() => setOpenModal(true)}
-          className="flex justify-center items-center gap-2 rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:opacity-90 transition-all cursor-pointer w-full sm:w-auto">
-          {/* <span className="text-base leading-none">+</span> */}
-          <span className="p-0">Create Task</span>
-        </button>
+        {roleProject === 'ADMIN' && (
+          <button
+            onClick={() => setOpenModal(true)}
+            className="flex justify-center items-center gap-2 rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:opacity-90 transition-all cursor-pointer w-full sm:w-auto">
+            {/* <span className="text-base leading-none">+</span> */}
+            <span className="p-0">Create Task</span>
+          </button>
+        )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statuses.map((status) => {
@@ -179,7 +183,7 @@ export default function TaskList({ refreshKey, tenantId, projectId }: Props) {
                           View
                         </button>
 
-                        <button
+                        {/* <button
                           className="
                 flex-1 px-3 py-2
                 rounded-xl
@@ -191,7 +195,7 @@ export default function TaskList({ refreshKey, tenantId, projectId }: Props) {
                 cursor-pointer
               ">
                           Edit
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   ))
@@ -214,9 +218,10 @@ export default function TaskList({ refreshKey, tenantId, projectId }: Props) {
         })}
       </div>
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
-        <CreateTask
+        <FormTask
           tenantId={tenantId}
           projectId={projectId}
+          onClose={() => setOpenModal(false)}
           onSuccess={(task) => {
             setTask(task);
             setOpenModal(false);

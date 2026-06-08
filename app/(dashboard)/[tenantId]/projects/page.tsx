@@ -23,12 +23,19 @@ export default async function ProjectsPage({
 
   const { tenantId } = await params;
 
-  await requireTenantAccess({
+  const permissions = await requireTenantAccess({
     userId: session.user.id,
     tenantId,
   });
+  const roleTenant = permissions.role.name;
 
   const projects = await getProjectList(tenantId);
 
-  return <ProjectPageView tenantId={tenantId} initialProjects={projects} />;
+  return (
+    <ProjectPageView
+      tenantId={tenantId}
+      initialProjects={projects}
+      roleTenant={roleTenant}
+    />
+  );
 }

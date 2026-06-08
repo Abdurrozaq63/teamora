@@ -5,21 +5,31 @@ import { Task } from '../types/task.type';
 type CreateTaskProps = {
   tenantId: string;
   projectId: string;
+  onClose: () => void;
   onSuccess?: (task: Task) => void;
 };
-export default function CreateTask({
+type formTask = {
+  title: string;
+  description: string;
+  dueDate: string;
+};
+export default function FormTask({
   tenantId,
   projectId,
+  onClose,
   onSuccess,
 }: CreateTaskProps) {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<formTask>({
     title: '',
     description: '',
+    dueDate: '',
   });
+  console.log('due date', form.dueDate);
   const [loading, setLoading] = useState(false);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
     const addTask = await fetch(
       `/api/project/${tenantId}/${projectId}/create-task`,
       {
@@ -126,6 +136,33 @@ export default function CreateTask({
           transition
         "
           />
+          <input
+            type="date"
+            placeholder="Enter due date..."
+            value={form.dueDate}
+            onClick={(e) => {
+              (e.currentTarget as HTMLInputElement).showPicker?.();
+            }}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                dueDate: e.target.value,
+              })
+            }
+            className="
+          w-full
+          rounded-2xl
+          border border-gray-200 dark:border-gray-700
+          bg-white/70 dark:bg-gray-900
+          px-4 py-3
+          text-sm text-gray-900 dark:text-white
+          placeholder:text-gray-400
+          focus:outline-none
+          focus:ring-2 focus:ring-blue-500/40
+          focus:border-blue-500
+          transition
+        "
+          />
         </div>
 
         {/* Actions */}
@@ -136,7 +173,7 @@ export default function CreateTask({
             className="
           flex-1
           rounded-2xl
-          bg-gradient-to-r from-blue-600 to-indigo-600
+          bg-linear-to-r from-blue-600 to-indigo-600
           px-5 py-3
           text-sm font-semibold text-white
           shadow-lg shadow-blue-500/20
@@ -149,6 +186,7 @@ export default function CreateTask({
           </button>
 
           <button
+            onClick={onClose}
             type="button"
             className="
           rounded-2xl

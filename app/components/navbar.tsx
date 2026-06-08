@@ -1,6 +1,7 @@
 'use client';
 import { useLogout } from '@/features/auth/hooks/useLogout';
 import Link from 'next/link';
+import { useState } from 'react';
 
 type MenuItem = {
   name: string;
@@ -13,10 +14,23 @@ type NavbarProps = {
 };
 
 export default function Navbar({ menus = [] }: NavbarProps) {
+  const [toogle, setToogle] = useState(3);
+  const [viewProfil, setViewProfil] = useState('hidden');
   const { logout } = useLogout();
+
+  const handleProfilView = () => {
+    setToogle((prev) => prev + 1);
+    const num = toogle % 2;
+    if (num == 0) {
+      setViewProfil('hidden');
+    }
+    if (num == 1) {
+      setViewProfil('');
+    }
+  };
   return (
     <header className=" border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex h-16 max-w-7xl justify-between items-center gap-8 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center text-xl">
           <span className="font-bold dark:text-white">Team</span>
@@ -25,13 +39,20 @@ export default function Navbar({ menus = [] }: NavbarProps) {
             Ora
           </span>
         </Link>
-
-        <div className="flex flex-1 items-center justify-end md:justify-between">
-          {/* MENU (Reusable) */}
-          <nav className="hidden md:block">
-            <ul className="flex items-center gap-6 text-lg">
+        {/* Right Section */}
+        <div className="flex items-center gap-4">
+          <div onClick={handleProfilView} className="cursor-pointer">
+            <img
+              src="/account.svg"
+              alt="profile"
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          </div>
+          <nav
+            className={`fixed top-20 right-10 w-52 border border-white/40  shadow-sm rounded-2xl overflow-hidden ${viewProfil}`}>
+            <ul className="flex flex-col items-start text-lg">
               {menus.map((menu, index) => (
-                <li key={index}>
+                <li className="bg-gray-900 w-full p-3 h-full " key={index}>
                   {menu.href ? (
                     <Link
                       href={menu.href}
@@ -53,32 +74,6 @@ export default function Navbar({ menus = [] }: NavbarProps) {
               ))}
             </ul>
           </nav>
-
-          {/* Right Section */}
-          <div className="flex items-center gap-4">
-            {/* Search */}
-            <div className="relative hidden sm:block">
-              <input
-                className="h-10 w-full rounded-lg border-none bg-gray-100 ps-4 pe-10 text-sm shadow-sm sm:w-56 dark:bg-gray-800 dark:text-white"
-                type="search"
-                placeholder="Search..."
-              />
-            </div>
-
-            {/* Profile */}
-            <div className="hidden sm:block">
-              <img
-                src="/account.svg"
-                alt="profile"
-                className="h-10 w-10 rounded-full object-cover"
-              />
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button className="block rounded bg-gray-100 p-2.5 text-gray-600 md:hidden dark:bg-gray-800 dark:text-white">
-              ☰
-            </button>
-          </div>
         </div>
       </div>
     </header>

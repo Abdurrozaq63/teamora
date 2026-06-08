@@ -13,12 +13,9 @@ export default async function DashboardPage({
     tenantId: string;
   }>;
 }) {
-  console.log('berhasil mengunjungi dashboard');
   const session = await auth();
-  console.log('berhasil membaca session', session);
 
   if (!session) {
-    console.log('session tidak valid', session);
     redirect('/login');
   }
 

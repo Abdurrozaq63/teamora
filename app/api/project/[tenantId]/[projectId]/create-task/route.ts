@@ -20,6 +20,7 @@ export async function POST(
       userId: session.user.id,
       title: body.title,
       description: body.description,
+      dueDate: new Date(body.dueDate),
     });
     if (!addTask) {
       return NextResponse.json(

@@ -16,7 +16,6 @@ export default function CreateAssignee({ tenantId, projectId }: Props) {
   if (!detailTask) {
     return <div>Loading . . .</div>;
   }
-  console.log('detail task', detailTask);
   const handleAdd = async (userId: string) => {
     const x = await createAssignee(detailTask.id, userId);
     if (!x) {

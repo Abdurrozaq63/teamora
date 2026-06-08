@@ -1,6 +1,5 @@
 import { prisma } from '@/lib/prisma';
 import { accessCheck } from '../permissions/task.permissions';
-import { NextRequest } from 'next/server';
 
 interface Props {
   tenantId: string;
@@ -20,7 +19,7 @@ export async function addAssignee({
   const cekRole = await accessCheck({ tenantId, projectId, userId });
   const role = cekRole.role;
 
-  if (!cekRole && role != 'ADMIN') {
+  if (!cekRole || role != 'ADMIN') {
     return { message: 'forbidden Role', reason: role };
   }
 
@@ -36,6 +35,15 @@ export async function addAssignee({
   if (!add) {
     return { message: 'failed add assignee' };
   }
+  await prisma.task.update({
+    where: {
+      id: taskId,
+    },
+    data: {
+      status: 'IN_PROGRESS',
+    },
+  });
+
   return await prisma.taskAssignee.findMany({
     where: {
       taskId,

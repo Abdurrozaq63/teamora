@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import Modal from '@/app/components/modal';
 import CreateMember from './CreateMember';
+import { useProjectStore } from '../store/useProjectStore';
 export default function MemberSectionHeader() {
   const handleAdd = () => {
     setOpenModal(true);
   };
+  const { roleProject } = useProjectStore();
   const [openModal, setOpenModal] = useState(false);
   return (
     <>
@@ -19,11 +21,13 @@ export default function MemberSectionHeader() {
           </p>
         </div>
         <div>
-          <button
-            onClick={handleAdd}
-            className="px-3 py-2 dark:bg-blue-600 dark:text-white  rounded-lg cursor-pointer">
-            <span>Add Member</span>
-          </button>
+          {roleProject === 'ADMIN' && (
+            <button
+              onClick={handleAdd}
+              className="px-3 py-2 dark:bg-blue-600 dark:text-white  rounded-lg cursor-pointer">
+              <span>Add Member</span>
+            </button>
+          )}
         </div>
         <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
           <CreateMember />

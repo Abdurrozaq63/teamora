@@ -12,6 +12,8 @@ interface Props {
   tenantId: string;
   projectId: string;
   userId: string;
+  taskId: string;
+  roleProject: 'ADMIN' | 'MEMBER' | undefined;
   detailTask: DetailTaskProps;
   listAssigneed: UnassigneeTask[];
 }
@@ -20,10 +22,13 @@ export default function DetailTaskView({
   tenantId,
   projectId,
   userId,
+  taskId,
+  roleProject,
   detailTask,
   listAssigneed,
 }: Props) {
   const { setAssigneedTask, setDetailTask } = useTaskStore();
+
   useEffect(() => {
     setAssigneedTask(listAssigneed);
     setDetailTask(detailTask);
@@ -31,17 +36,22 @@ export default function DetailTaskView({
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 px-2 py-3 sm:px-6 lg:px-3">
       <div className="mx-auto max-w-6xl">
-        <DetailTaskHeader tenantId={tenantId} projectId={projectId} />
+        <DetailTaskHeader
+          tenantId={tenantId}
+          projectId={projectId}
+          roleProject={roleProject}
+        />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <DetailTask
             tenantId={tenantId}
             projectId={projectId}
             userId={userId}
+            roleProject={roleProject}
           />
 
           {/* RIGHT — Submission form */}
-          <SubmissionForm />
+          <SubmissionForm taskId={taskId} submittedBy={userId} />
         </div>
       </div>
     </div>

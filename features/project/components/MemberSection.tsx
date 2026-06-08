@@ -1,8 +1,34 @@
 import { useState } from 'react';
 import { useProjectStore } from '../store/useProjectStore';
-export default function MemberSection() {
-  const { memberProjects } = useProjectStore();
 
+import Modal from '@/app/components/modal';
+import UpdateMemberRoleModal from './UpdateRoleProject';
+import DeleteMemberProjectModal from './DeleteMember';
+export default function MemberSection() {
+  const {
+    memberProjects,
+    roleProject,
+    tenantId,
+    projectId,
+    removeMemberProject,
+  } = useProjectStore();
+  const updateMemberRole = useProjectStore((state) => state.updateMemberRole);
+  const [currentRole, setCurrentRole] = useState<'ADMIN' | 'MEMBER' | ''>('');
+  const [memberId, setMemberId] = useState('');
+  const [targetUser, setTargetUser] = useState('');
+  const [openModal, setOpenModal] = useState<'UPDATE' | 'DELETE' | null>(null);
+
+  const handleUpdate = (id: string, role: string) => {
+    setOpenModal('UPDATE');
+    setMemberId(id);
+    setCurrentRole(role as 'ADMIN' | 'MEMBER');
+    console.log('member Id', id);
+  };
+  const handleDelete = (id: string, userId: string) => {
+    setOpenModal('DELETE');
+    setMemberId(id);
+    setTargetUser(userId);
+  };
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
@@ -96,22 +122,58 @@ export default function MemberSection() {
 
                 {/* Action */}
                 <div className="flex gap-2 justify-end md:justify-start">
-                  <div className=" bg-amber-500 hover:bg-amber-600 rounded-lg px-3 py-2">
-                    <button className=" text-white text-sm font-medium transition-colors">
-                      Update
-                    </button>
-                  </div>
-                  <div className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700">
-                    <button className=" text-white text-sm font-medium transition-colors">
-                      Out
-                    </button>
-                  </div>
+                  {roleProject === 'ADMIN' && (
+                    <div
+                      onClick={() => handleUpdate(mp.id, mp.role)}
+                      className="bg-amber-500 hover:bg-amber-600  rounded-lg px-3 py-2">
+                      <button className="text-white text-sm font-medium transition-colors">
+                        Update
+                      </button>
+                    </div>
+                  )}
+                  {roleProject === 'ADMIN' && (
+                    <div
+                      onClick={() => handleDelete(mp.id, mp.userId)}
+                      className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700">
+                      <button className=" text-white text-sm font-medium transition-colors">
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                  {roleProject === 'MEMBER' && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Action for admin only
+                    </p>
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+      <Modal isOpen={openModal !== null} onClose={() => setOpenModal(null)}>
+        {openModal === 'UPDATE' && (
+          <UpdateMemberRoleModal
+            memberId={memberId}
+            currentRole={currentRole}
+            tenantId={tenantId}
+            projectId={projectId}
+            onClose={() => setOpenModal(null)}
+            onSuccess={(role) =>
+              updateMemberRole(memberId, role as 'ADMIN' | 'MEMBER')
+            }
+          />
+        )}
+        {openModal === 'DELETE' && (
+          <DeleteMemberProjectModal
+            tenantId={tenantId}
+            memberId={memberId}
+            targetUser={targetUser}
+            onClose={() => setOpenModal(null)}
+            onSuccess={(id) => removeMemberProject(id)}
+          />
+        )}
+      </Modal>
     </div>
   );
 }
