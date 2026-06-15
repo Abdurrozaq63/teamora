@@ -11,15 +11,16 @@ export function useCreateAssignee({ tenantId, projectId }: Props) {
     try {
       setLoading(true);
       const add_Assignee = await fetch(
-        `/api/project/${tenantId}/${projectId}/${taskId}`,
+        `/api/project/${tenantId}/${projectId}/${taskId}/assignee/`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(userId),
         },
       );
+      const data = add_Assignee.json();
 
-      return add_Assignee;
+      return data;
     } finally {
       setLoading(false);
     }

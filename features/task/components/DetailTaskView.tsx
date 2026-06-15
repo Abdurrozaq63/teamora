@@ -27,12 +27,14 @@ export default function DetailTaskView({
   detailTask,
   listAssigneed,
 }: Props) {
-  const { setAssigneedTask, setDetailTask } = useTaskStore();
+  const { assigneedTask, setAssigneedTask, setDetailTask } = useTaskStore();
 
   useEffect(() => {
     setAssigneedTask(listAssigneed);
     setDetailTask(detailTask);
   }, [listAssigneed, detailTask]);
+  const x = detailTask.taskAssignees.find((x) => x.userId == userId);
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 px-2 py-3 sm:px-6 lg:px-3">
       <div className="mx-auto max-w-6xl">
@@ -51,7 +53,7 @@ export default function DetailTaskView({
           />
 
           {/* RIGHT — Submission form */}
-          <SubmissionForm taskId={taskId} submittedBy={userId} />
+          {x && <SubmissionForm taskId={taskId} submittedBy={userId} />}
         </div>
       </div>
     </div>

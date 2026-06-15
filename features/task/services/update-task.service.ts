@@ -1,24 +1,24 @@
 import { prisma } from '@/lib/prisma';
-import { Task } from '../types/task.type';
 interface Props {
-  tenantId: string;
-  projectId: string;
-  userId: string;
+  title: string;
+  description: string;
+  dueDate: Date;
   taskId: string;
 }
-export async function detailTask({
-  tenantId,
-  projectId,
-  userId,
+export async function updateTask({
+  title,
+  description,
+  dueDate,
   taskId,
 }: Props) {
-  //ambil task, include assignee, include submission
-  const x = await prisma.task.findUniqueOrThrow({
+  const update = await prisma.task.update({
     where: {
       id: taskId,
-      tenantId,
-      projectId,
-      deletedAt: null,
+    },
+    data: {
+      title: title,
+      description: description,
+      dueDate: dueDate,
     },
     include: {
       taskAssignees: {
@@ -35,5 +35,5 @@ export async function detailTask({
       taskSubmissions: true,
     },
   });
-  return x;
+  return update;
 }

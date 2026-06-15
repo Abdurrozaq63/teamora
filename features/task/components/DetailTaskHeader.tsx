@@ -1,5 +1,10 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { useTaskStore } from '../store/useTaskStore';
+import Modal from '@/app/components/modal';
+import { useState, useEffect } from 'react';
+import FormTask from './FormTask';
+import DeleteTaskModal from './DeleteTaskModal';
 
 interface Props {
   tenantId: string;
@@ -12,10 +17,20 @@ export default function DetailTaskHeader({
   projectId,
   roleProject,
 }: Props) {
+  const { detailTask, setDetailTask } = useTaskStore();
+  const [taskId, setTaskId] = useState('');
+  const [taskTitle, setTaskTitle] = useState('');
+  useEffect(() => {
+    if (detailTask) {
+      setTaskId(detailTask.id);
+      setTaskTitle(detailTask.title);
+    }
+  }, [detailTask]);
   const router = useRouter();
   const handleBack = () => {
     router.push(`/${tenantId}/projects/${projectId}`);
   };
+  const [openModal, setOpenModal] = useState<'EDIT' | 'DELETE' | null>(null);
   return (
     <div
       className="
@@ -65,6 +80,7 @@ export default function DetailTaskHeader({
     ">
           {/* Edit */}
           <button
+            onClick={() => setOpenModal('EDIT')}
             className="
         rounded-2xl
         border border-gray-200 dark:border-gray-700
@@ -82,21 +98,39 @@ export default function DetailTaskHeader({
 
           {/* Done */}
           <button
-            className="
-        rounded-2xl
-        bg-linear-to-r from-emerald-500 to-green-600
-        px-5 py-3
-        text-sm font-semibold text-white
-        shadow-lg shadow-emerald-500/20
-        hover:opacity-90
-        transition-opacity
-        cursor-pointer
-        w-full sm:w-auto
-      ">
-            Mark as Done
+            onClick={() => setOpenModal('DELETE')}
+            className="px-4 py-2 rounded-xl border border-red-200 dark:border-red-900/50 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer">
+            Delete
           </button>
         </div>
       )}
+      <Modal isOpen={openModal !== null} onClose={() => setOpenModal(null)}>
+        {openModal === 'EDIT' && (
+          <FormTask
+            tenantId={tenantId}
+            projectId={projectId}
+            taskId={detailTask?.id}
+            mode={'EDIT'}
+            onClose={() => setOpenModal(null)}
+            onSuccessEdit={(result) => {
+              setDetailTask(result);
+            }}
+          />
+        )}
+        {openModal === 'DELETE' && (
+          <DeleteTaskModal
+            tenantId={tenantId}
+            projectId={projectId}
+            taskId={taskId}
+            taskTitle={taskTitle}
+            onClose={() => setOpenModal(null)}
+            onSuccess={() => {
+              setOpenModal(null);
+              router.push(`/${tenantId}/projects/${projectId}`);
+            }}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

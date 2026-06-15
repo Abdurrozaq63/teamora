@@ -2,12 +2,18 @@
 import { useTaskStore } from '../store/useTaskStore';
 import { useCreateAssignee } from '../hooks/create-assignee.hook';
 import { useState } from 'react';
+import { taskAssignee } from '../types/task-assignees.type';
 
 interface Props {
   tenantId: string;
   projectId: string;
+  onSuccess?: (assignee: taskAssignee) => void;
 }
-export default function CreateAssignee({ tenantId, projectId }: Props) {
+export default function CreateAssignee({
+  tenantId,
+  projectId,
+  onSuccess,
+}: Props) {
   const { assigneedTask, removeAssigneed, detailTask } = useTaskStore();
   const { createAssignee, loading } = useCreateAssignee({
     tenantId,
@@ -21,6 +27,7 @@ export default function CreateAssignee({ tenantId, projectId }: Props) {
     if (!x) {
       return console.log('gagal menambakan assigned', x);
     }
+    onSuccess?.(x);
     removeAssigneed(userId);
   };
   return (
@@ -128,9 +135,11 @@ export default function CreateAssignee({ tenantId, projectId }: Props) {
               <div className="flex justify-end md:justify-center">
                 <button
                   onClick={() => handleAdd(x.userId)}
+                  disabled={loading}
                   className="w-9 h-9 cursor-pointer rounded-full bg-gray-900 dark:bg-white text-white dark:text-black flex items-center justify-center text-lg hover:scale-105 active:scale-95 transition-transform">
                   +
                 </button>
+                {loading && <p>Loading...</p>}
               </div>
             </div>
           );

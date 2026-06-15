@@ -30,6 +30,15 @@ export async function addAssignee({
       taskId,
       userId: bodyUserId,
     },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+        },
+      },
+    },
   });
 
   if (!add) {
@@ -44,13 +53,5 @@ export async function addAssignee({
     },
   });
 
-  return await prisma.taskAssignee.findMany({
-    where: {
-      taskId,
-      userId: add.userId,
-    },
-    include: {
-      user: true,
-    },
-  });
+  return add;
 }

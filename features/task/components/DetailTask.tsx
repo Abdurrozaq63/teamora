@@ -2,8 +2,12 @@
 import Modal from '@/app/components/modal';
 import { useTaskStore } from '../store/useTaskStore';
 import TaskSubmission from './TaskSubmission';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CreateAssignee from './CreateAssignee';
+import { taskAssignee } from '../types/task-assignees.type';
+import { useUpdateTask } from '../hooks/update-task.hook';
+import { toast } from 'sonner';
+
 interface Props {
   tenantId: string;
   projectId: string;
@@ -17,11 +21,55 @@ export default function DetailTask({
   roleProject,
 }: Props) {
   const { detailTask } = useTaskStore();
+  const { updateMessageReview, loading } = useUpdateTask();
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [tempMessage, setTempMessage] = useState('');
+
+  useEffect(() => {
+    if (detailTask?.messageReview) {
+      setTempMessage(detailTask.messageReview);
+    }
+  }, [detailTask]);
+
+  async function handleSave() {
+    if (!detailTask) {
+      console.error('Task not found');
+      return;
+    }
+    const res = await updateMessageReview({
+      tenantId,
+      projectId,
+      taskId: detailTask.id,
+      message: tempMessage,
+    });
+    if (!res.ok) {
+      toast.error('Failed Update Message Review');
+    }
+    toast.success('Success Update Message');
+    setIsEditing(false);
+  }
+
+  function handleCancel() {
+    if (detailTask?.messageReview) {
+      setTempMessage(detailTask.messageReview);
+    }
+    setIsEditing(false);
+  }
+
+  const [listAssignee, setListAssignee] = useState<taskAssignee[]>([]);
+  useEffect(() => {
+    if (detailTask) {
+      setListAssignee(detailTask.taskAssignees);
+    }
+  }, [detailTask]);
 
   const handleAdd = () => {
     setOpenModal(true);
   };
+  console.log('role project', roleProject);
   const [openModal, setOpenModal] = useState(false);
+
   if (!detailTask) {
     return <div>Loading . . .</div>;
   }
@@ -200,7 +248,7 @@ export default function DetailTask({
 
             {/* Assignee List */}
             <div className="flex flex-wrap gap-3">
-              {detailTask.taskAssignees.map((x, index) => (
+              {listAssignee.map((x, index) => (
                 <div
                   key={index}
                   className="
@@ -234,6 +282,129 @@ export default function DetailTask({
             </div>
           </div>
         </div>
+        {detailTask.status !== 'DONE' && (
+          <div
+            className="
+        rounded-3xl
+        border border-gray-200 dark:border-gray-800
+        bg-white/80 dark:bg-gray-900/80
+        backdrop-blur-xl
+        shadow-sm
+        p-6
+        space-y-5">
+            {/* Header */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Review Message
+              </h3>
+
+              {/* <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Give feedback or request changes before approval
+            </p> */}
+            </div>
+
+            {/* Content */}
+            {isEditing ? (
+              <div className="space-y-4">
+                <textarea
+                  value={tempMessage}
+                  onChange={(e) => setTempMessage(e.target.value)}
+                  rows={5}
+                  className="
+              w-full
+              rounded-2xl
+              border border-gray-200 dark:border-gray-700
+              bg-white dark:bg-gray-950
+              px-4 py-3
+              text-sm
+              text-gray-800 dark:text-white
+              resize-none
+              focus:outline-none
+              focus:ring-2
+              focus:ring-blue-500/40
+              transition
+            "
+                />
+
+                {roleProject === 'ADMIN' && (
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={handleCancel}
+                      className="
+                px-4 py-2
+                rounded-xl
+                border
+                border-gray-300 dark:border-gray-700
+                text-sm
+                font-medium
+                text-gray-700 dark:text-gray-300
+                hover:bg-gray-100 dark:hover:bg-gray-800
+                transition
+                cursor-pointer">
+                      Cancel
+                    </button>
+
+                    <button
+                      onClick={handleSave}
+                      className="
+                px-4 py-2
+                rounded-xl
+                bg-linear-to-r
+                from-blue-600
+                to-indigo-600
+                text-white
+                text-sm
+                font-medium
+                shadow-md shadow-blue-500/20
+                hover:opacity-90
+                transition
+                cursor-pointer
+              ">
+                      {loading ? 'Loading...' : 'Save'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <div
+                  className="
+              rounded-2xl
+              bg-gray-50 dark:bg-gray-800/60
+              border border-gray-200 dark:border-gray-800
+              p-4
+            ">
+                  <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                    {tempMessage}
+                  </p>
+                </div>
+
+                {roleProject === 'ADMIN' && (
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="
+                px-4 py-2
+                rounded-xl
+                bg-linear-to-r
+                from-blue-600
+                to-indigo-600
+                text-white
+                text-sm
+                font-medium
+                shadow-md shadow-blue-500/20
+                hover:opacity-90
+                transition
+                cursor-pointer
+              ">
+                      Update Message
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Submission */}
@@ -244,7 +415,14 @@ export default function DetailTask({
 
       {/* Modal */}
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
-        <CreateAssignee tenantId={tenantId} projectId={projectId} />
+        <CreateAssignee
+          tenantId={tenantId}
+          projectId={projectId}
+          onSuccess={(x) => {
+            setOpenModal(false);
+            setListAssignee((prev) => [...prev, x]);
+          }}
+        />
       </Modal>
     </div>
   );

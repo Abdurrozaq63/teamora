@@ -221,8 +221,9 @@ export default function TaskList({ refreshKey, tenantId, projectId }: Props) {
         <FormTask
           tenantId={tenantId}
           projectId={projectId}
+          mode={'CREATE'}
           onClose={() => setOpenModal(false)}
-          onSuccess={(task) => {
+          onSuccessCreate={(task) => {
             setTask(task);
             setOpenModal(false);
           }}

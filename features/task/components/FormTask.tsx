@@ -1,12 +1,18 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Task } from '../types/task.type';
+import { useTaskStore } from '../store/useTaskStore';
+import { DetailTaskProps } from '../types/detail-task.type';
 
 type CreateTaskProps = {
   tenantId: string;
   projectId: string;
+  taskId?: string;
+
+  mode: 'EDIT' | 'CREATE';
   onClose: () => void;
-  onSuccess?: (task: Task) => void;
+  onSuccessCreate?: (task: Task) => void;
+  onSuccessEdit?: (task: DetailTaskProps) => void;
 };
 type formTask = {
   title: string;
@@ -16,36 +22,62 @@ type formTask = {
 export default function FormTask({
   tenantId,
   projectId,
+  taskId,
+  mode,
   onClose,
-  onSuccess,
+  onSuccessCreate,
+  onSuccessEdit,
 }: CreateTaskProps) {
+  const { detailTask } = useTaskStore();
+
   const [form, setForm] = useState<formTask>({
     title: '',
     description: '',
-    dueDate: '',
+    dueDate: new Date().toISOString().split('T')[0],
   });
-  console.log('due date', form.dueDate);
+  useEffect(() => {
+    if (mode === 'EDIT' && detailTask) {
+      setForm({
+        title: detailTask.title,
+        description: detailTask.description ?? '',
+        dueDate: detailTask?.dueDate
+          ? new Date(detailTask.dueDate).toISOString().split('T')[0]
+          : '',
+      });
+    }
+  }, [detailTask, mode]);
+
+  const actionButton = mode === 'CREATE' ? ' Create Task' : 'Save Update';
+
   const [loading, setLoading] = useState(false);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const addTask = await fetch(
-      `/api/project/${tenantId}/${projectId}/create-task`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      },
-    );
+    const url =
+      mode === 'CREATE'
+        ? `/api/project/${tenantId}/${projectId}/task`
+        : `/api/project/${tenantId}/${projectId}/${taskId}`;
+    const methods = mode === 'CREATE' ? 'POST' : 'PUT';
+    const addTask = await fetch(url, {
+      method: methods,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
     if (!addTask.ok) {
       console.error('failed create task');
+      setLoading(false);
       return;
     }
     const data = await addTask.json();
     if (addTask.ok) {
       setLoading(false);
-      onSuccess?.(data.task);
+      if (mode === 'CREATE') {
+        onSuccessCreate?.(data.task);
+      }
+      if (mode === 'EDIT') {
+        onSuccessEdit?.(data);
+      }
     }
   }
   return (
@@ -182,7 +214,7 @@ export default function FormTask({
           disabled:opacity-50
           cursor-pointer
         ">
-            {loading ? 'Creating Task...' : 'Create Task'}
+            {loading ? 'Loading...' : actionButton}
           </button>
 
           <button

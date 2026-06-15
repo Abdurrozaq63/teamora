@@ -16,6 +16,7 @@ export async function getTaskList({ tenantId, projectId, userId }: Props) {
       where: {
         tenantId,
         projectId,
+        deletedAt: null,
       },
       include: {
         project: true,
