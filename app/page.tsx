@@ -217,8 +217,10 @@ export default async function LandingPage() {
 
         <div className="mt-8 space-y-2">
           <p>👨‍💻 Developer: Muhammad Abdul Rozaq</p>
-          <p>📧 Email: your-email@example.com</p>
-          <p>🐙 Github: github.com/your-github</p>
+          <p>📧 Email: m.abdulrozaq06@gmail.com</p>
+          <p>
+            🐙 Github: <a>https://github.com/Abdurrozaq63</a>
+          </p>
         </div>
       </section>
 
