@@ -58,7 +58,6 @@ export async function DELETE(
       userId: body.targetUser,
       projectId,
     });
-    console.log(`memberID: ${body.memberId}, targetUser: ${body.targetUser}`);
 
     return NextResponse.json({
       success: true,

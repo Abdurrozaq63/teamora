@@ -11,7 +11,7 @@ export default function MemberTenantHeader() {
         </p>
       </div>
 
-      <button
+      {/* <button
         className="
           px-5 py-2.5
           rounded-xl
@@ -24,7 +24,7 @@ export default function MemberTenantHeader() {
           cursor-pointer
         ">
         + Add Member
-      </button>
+      </button> */}
     </div>
   );
 }

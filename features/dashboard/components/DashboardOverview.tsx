@@ -9,12 +9,17 @@ import RecentProjects from './RecentProjects';
 import RecentActivity from './RecentActivity';
 
 import { getDashboardStats } from '../services/StatDashboard.service';
+import { AuditLog } from '@/features/auditLog/types/audit-log.type';
 
 interface Props {
   membership: Membership;
+  activity: AuditLog[];
 }
 
-export default async function DashboardOverview({ membership }: Props) {
+export default async function DashboardOverview({
+  membership,
+  activity,
+}: Props) {
   const statDashboard = await getDashboardStats({
     tenantId: membership.tenantId,
   });
@@ -32,7 +37,7 @@ export default async function DashboardOverview({ membership }: Props) {
 
       {/* <RecentProjects /> */}
 
-      <RecentActivity />
+      <RecentActivity activities={activity} />
     </div>
   );
 }

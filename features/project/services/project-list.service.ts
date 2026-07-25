@@ -10,5 +10,12 @@ export async function getProjectList(tenantId: string) {
     orderBy: {
       createdAt: 'desc',
     },
+    include: {
+      tasks: {
+        where: {
+          deletedAt: null,
+        },
+      },
+    },
   });
 }

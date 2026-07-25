@@ -1,27 +1,9 @@
-export default function RecentActivity() {
-  const activities = [
-    {
-      user: 'Ahmad',
-      action: 'membuat project baru',
-      time: '2 jam lalu',
-    },
-    {
-      user: 'Budi',
-      action: 'menyelesaikan task',
-      time: '5 jam lalu',
-    },
-    {
-      user: 'Siti',
-      action: 'menambahkan member',
-      time: '1 hari lalu',
-    },
-    {
-      user: 'Rina',
-      action: 'mengupdate project',
-      time: '2 hari lalu',
-    },
-  ];
+import { AuditLog } from '@/features/auditLog/types/audit-log.type';
 
+interface Props {
+  activities: AuditLog[];
+}
+export default function RecentActivity({ activities }: Props) {
   return (
     <div
       className="
@@ -73,7 +55,7 @@ export default function RecentActivity() {
               <div className="min-w-0">
                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                   <span className="font-semibold text-gray-900 dark:text-white">
-                    {activity.user}
+                    {activity.user.name}
                   </span>{' '}
                   {activity.action}
                 </p>
@@ -87,7 +69,7 @@ export default function RecentActivity() {
             text-xs font-medium
             text-gray-400 dark:text-gray-500
           ">
-              {activity.time}
+              {activity.createdAt.toDateString()}
             </span>
           </div>
         ))}

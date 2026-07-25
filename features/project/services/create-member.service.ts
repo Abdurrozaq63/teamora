@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { checkProjectAccess } from '../permissions/project-access.permission';
+import { auditLogService } from '@/features/auditLog';
+
 interface Props {
   userId: string;
   projectId: string;
@@ -24,6 +26,13 @@ export async function createMemberProject({
       projectId,
       role: 'MEMBER',
     },
+  });
+  await auditLogService.create({
+    tenantId,
+    userId,
+    entity: 'PROJECT MEMBER',
+    entityId: add.id,
+    action: 'CREATE',
   });
   return add;
 }

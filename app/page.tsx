@@ -32,7 +32,7 @@ export default async function LandingPage() {
               hover:scale-105
               transition
             ">
-              Go to App
+              Get Started
             </a>
           ) : (
             <div className="flex gap-3">
@@ -101,16 +101,18 @@ export default async function LandingPage() {
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-          <button
-            className="
+          <a href="/onboarding">
+            <button
+              className="
             px-8 py-3 rounded-2xl
             bg-linear-to-r
             from-blue-600 to-indigo-600
             text-white font-semibold
             shadow-xl shadow-blue-500/30
             hover:scale-105 transition">
-            Get Started
-          </button>
+              Get Started
+            </button>
+          </a>
 
           <button
             className="

@@ -38,8 +38,6 @@ export default function ProjectPageView({
         roleTenant={roleTenant}
       />
 
-      <ProjectFilterBar />
-
       <ProjectGrid projects={projects} />
 
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>

@@ -1,17 +1,80 @@
+'use client';
+import { useEffect, useState } from 'react';
 import { Membership } from '../types/member-list.type';
+import Modal from '@/app/components/modal';
+import UpdateMemberTenant from './UpdateMember';
+import DeleteMemberTenantModal from './DeleteMember';
+import { string } from 'zod';
 
 interface Props {
+  tenantId: string;
   listMember: Membership[];
 }
 
-export default function MemberTenantTable({ listMember }: Props) {
+export default function MemberTenantTable({ tenantId, listMember }: Props) {
+  const [members, setMembers] = useState<Membership[]>([]);
+  console.log(members);
+  const [memberIdUp, setMemberIdUp] = useState('');
+  const [roleNameUp, setRoleNameUp] = useState('');
+  const [statusUp, setRoleStatusUp] = useState('');
+  const [targetUser, setTargetUser] = useState('');
+  const [targetId, setTargetId] = useState('');
+
+  useEffect(() => {
+    if (listMember) {
+      setMembers(listMember);
+    }
+  }, [listMember]);
+
+  const handleSuccess = (
+    id: string,
+    newRole: string,
+    newStatus: string,
+    roleId: string,
+  ) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) =>
+        member.id === id
+          ? {
+              ...member,
+              roleId: roleId,
+              status: newStatus,
+              role: {
+                id: roleId,
+                name: newRole,
+              },
+            }
+          : member,
+      ),
+    );
+  };
+
+  const handleDelete = (
+    memberId: string,
+    targetUser: string,
+    idUser: string,
+  ) => {
+    setMemberIdUp(memberId);
+    setTargetUser(targetUser);
+    setTargetId(idUser);
+    setOpenModal('DELETE');
+  };
+
+  const openUpdate = (memberId: string, roleName: string, status: string) => {
+    setOpenModal('UPDATE');
+    setMemberIdUp(memberId);
+    setRoleNameUp(roleName);
+    setRoleStatusUp(status);
+  };
+
+  const [openModal, setOpenModal] = useState<'UPDATE' | 'DELETE' | null>(null);
   return (
     <div
       className="
         rounded-3xl
         border border-gray-200 dark:border-gray-800
         bg-white/80 dark:bg-gray-900/80
-        backdrop-blur-xl
+       
         shadow-sm
         overflow-hidden
       ">
@@ -35,7 +98,7 @@ export default function MemberTenantTable({ listMember }: Props) {
       </div>
 
       <div className="divide-y divide-gray-200 dark:divide-gray-800">
-        {listMember.map((member) => {
+        {members.map((member) => {
           const roleBadge =
             member.role.name === 'ADMIN'
               ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
@@ -117,6 +180,9 @@ export default function MemberTenantTable({ listMember }: Props) {
               {/* Action */}
               <div className="flex gap-2 md:justify-center">
                 <button
+                  onClick={() =>
+                    openUpdate(member.id, member.role.name, member.status)
+                  }
                   className="
                     px-3 py-2
                     rounded-xl
@@ -131,6 +197,9 @@ export default function MemberTenantTable({ listMember }: Props) {
                 </button>
 
                 <button
+                  onClick={() =>
+                    handleDelete(member.id, member.user.name, member.user.id)
+                  }
                   className="
                     px-3 py-2
                     rounded-xl
@@ -148,6 +217,34 @@ export default function MemberTenantTable({ listMember }: Props) {
           );
         })}
       </div>
+      <Modal isOpen={openModal !== null} onClose={() => setOpenModal(null)}>
+        {openModal == 'UPDATE' && (
+          <UpdateMemberTenant
+            memberId={memberIdUp}
+            tenantId={tenantId}
+            roleName={roleNameUp}
+            status={statusUp}
+            onClose={() => setOpenModal(null)}
+            onSuccess={(newRole, newStatus, roleId) =>
+              handleSuccess(memberIdUp, newRole, newStatus, roleId)
+            }
+          />
+        )}
+        {openModal == 'DELETE' && (
+          <DeleteMemberTenantModal
+            memberId={memberIdUp}
+            tenantId={tenantId}
+            targetUser={targetUser}
+            targetId={targetId}
+            onClose={() => setOpenModal(null)}
+            onSuccess={(id) =>
+              setMembers((prevMembers) =>
+                prevMembers.filter((member) => member.id !== id),
+              )
+            }
+          />
+        )}
+      </Modal>
     </div>
   );
 }

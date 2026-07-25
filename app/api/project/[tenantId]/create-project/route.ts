@@ -7,6 +7,7 @@ import { createProjectSchema } from '@/features/project/validations/create-proje
 import { canCreateProject } from '@/features/project/permissions/create-project.permission';
 
 import { createProject } from '@/features/project/services/create-project.service';
+import { auditLogService } from '@/features/auditLog';
 
 export async function POST(
   req: NextRequest,
@@ -73,6 +74,14 @@ export async function POST(
       description: parsed.data.description,
 
       userId: session.user.id,
+    });
+
+    await auditLogService.create({
+      tenantId,
+      userId: session.user.id,
+      entity: 'Project',
+      entityId: project.id,
+      action: 'CREATE',
     });
 
     return NextResponse.json(

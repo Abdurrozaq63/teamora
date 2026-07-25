@@ -22,7 +22,7 @@ export default async function MemberTenant({
   return (
     <div className="space-y-3">
       <MemberTenantHeader />
-      <MemberTenantTable listMember={listMember} />
+      <MemberTenantTable tenantId={tenantId} listMember={listMember} />
     </div>
   );
 }

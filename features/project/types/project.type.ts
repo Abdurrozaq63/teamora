@@ -1,3 +1,5 @@
+import { Task } from '@/features/task/types/task.type';
+
 export interface Project {
   id: string;
   tenantId: string;
@@ -7,4 +9,5 @@ export interface Project {
   createdBy: string;
   createdAt: Date;
   deletedAt: Date | null;
+  tasks: Task[];
 }

@@ -19,6 +19,7 @@ export default function ProjectCard({ projects }: Props) {
       toast.error('Access Forbidden');
     }
   }, []);
+  console.log('project list', projects);
 
   return (
     <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
@@ -68,14 +69,14 @@ export default function ProjectCard({ projects }: Props) {
             {/* Status */}
             <div>
               <span className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                Active
+                {project.status}
               </span>
             </div>
 
             {/* Tasks */}
             <div>
               <span className="text-sm font-medium text-gray-900 dark:text-white">
-                12 Tasks
+                {project.tasks.length}
               </span>
             </div>
 
@@ -108,7 +109,7 @@ export default function ProjectCard({ projects }: Props) {
               </div>
 
               <span className="shrink-0 inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                Active
+                {project.status}
               </span>
             </div>
 
@@ -119,7 +120,7 @@ export default function ProjectCard({ projects }: Props) {
               </p>
 
               <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                12 Tasks
+                {project.tasks.length}
               </p>
             </div>
 
@@ -132,16 +133,6 @@ export default function ProjectCard({ projects }: Props) {
                 className="w-full px-4 py-2 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-90 transition-opacity cursor-pointer">
                 View
               </button>
-
-              <div className="grid grid-cols-2 gap-2">
-                <button className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer">
-                  Edit
-                </button>
-
-                <button className="px-4 py-2 rounded-xl border border-red-200 dark:border-red-900/50 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer">
-                  Delete
-                </button>
-              </div>
             </div>
           </div>
         ))}
