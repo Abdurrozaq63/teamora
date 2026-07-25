@@ -7,7 +7,16 @@ import { Project } from '../types/project.type';
 interface Props {
   tenantId: string;
   mode?: 'create' | 'edit';
-  project?: Project;
+  project?: {
+    id: string;
+    tenantId: string;
+    name: string;
+    description: string | null;
+    status: string;
+    createdBy: string;
+    createdAt: Date;
+    deletedAt: Date | null;
+  };
   onSuccess?: (project: Project) => void;
 }
 
