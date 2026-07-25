@@ -6,10 +6,20 @@ import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/modal';
 import ProjectForm from './FormProject';
 import DeleteProjectModal from './DeleteProject';
-import { Project } from '../types/project.type';
+//import { Project } from '../types/project.type';
 
 interface Props {
   project: ProjectDetail;
+}
+interface Project {
+  id: string;
+  tenantId: string;
+  name: string;
+  description: string | null;
+  status: string;
+  createdBy: string;
+  createdAt: Date;
+  deletedAt: Date | null;
 }
 
 export default function ProjectHeader({ project }: Props) {
